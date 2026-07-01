@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<!--
+  FitFusion AI - calorie.html
+  ----------------------------------------------------------
+  Purpose:
+    Calorie Calculator page -- UI prototype only. No
+    JavaScript, no backend submission logic, no API calls,
+    no database. Reuses the navbar/footer and existing
+    component/dashboard classes exactly as in bmi.html and
+    diet.html. The form's action is left as "#" since no
+    Flask route for this page exists yet in app.py (only
+    home, login, register, dashboard, bmi, diet, workout,
+    profile, contact are defined) -- per the "do not modify
+    existing files" rule, app.py is not touched here, so
+    url_for('calorie') cannot be used safely.
+-->
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calorie Calculator – FitSaathi AI</title>
+  <meta name="description" content="Calculate your daily calorie needs and macronutrient breakdown with FitSaathi AI.">
+
+  <!-- Single stylesheet entry point -- same as every other page -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- ======================================================
+       NAVBAR (same structure as dashboard.html / bmi.html / diet.html)
+  ======================================================= -->
+  <header class="navbar">
+    <div class="navbar-inner">
+
+      <a href="{{ url_for('home') }}" class="navbar-brand">
+        <span class="navbar-brand-mark" aria-hidden="true"></span>
+        FitFusion AI
+      </a>
+
+      <nav aria-label="Primary navigation">
+        <ul class="navbar-links" id="navbarLinks">
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('bmi') }}">BMI</a></li>
+          <li><a href="{{ url_for('workout') }}">Workout</a></li>
+          <li><a href="{{ url_for('diet') }}">Diet</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="navbar-actions">
+        <a href="{{ url_for('profile') }}" class="btn btn-secondary">Profile</a>
+        <a href="{{ url_for('login') }}" class="btn btn-primary" aria-label="Log out of FitFusion AI">Log Out</a>
+
+        <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ====================================================
+         PAGE HEADER (reuses dashboard header classes)
+    ===================================================== -->
+    <section class="dashboard-header" aria-labelledby="calorie-page-heading">
+      <div class="dashboard-header-content">
+        <div>
+          <span class="eyebrow">Nutrition</span>
+          <h1 class="dashboard-title" id="calorie-page-heading">Calorie Calculator</h1>
+          <p class="dashboard-subtitle">
+            Find your daily calorie needs based on your activity level and fitness goal.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         CALORIE CALCULATOR FORM
+    ===================================================== -->
+    <section aria-labelledby="calorie-form-heading">
+      <h2 class="section-heading" id="calorie-form-heading">Enter Your Details</h2>
+
+      <article class="glass-card">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+
+<div class="flash-container">
+
+{% for category,message in messages %}
+
+<div class="flash-message flash-{{ category }}">
+{{ message }}
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+{% endwith %}
+<form class="auth-form" action="#" method="POST" novalidate aria-label="Calorie calculator form">
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label for="age" class="form-label">Age</label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                class="form-input"
+                placeholder="e.g. 24"
+                min="1"
+                autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="gender" class="form-label">Gender</label>
+              <select id="gender" name="gender" class="form-input">
+                <option value="" disabled selected>Select your gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="height" class="form-label">Height (cm)</label>
+              <input
+                type="number"
+                id="height"
+                name="height"
+                class="form-input"
+                placeholder="e.g. 172"
+                min="1"
+                step="0.1"
+                autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="weight" class="form-label">Weight (kg)</label>
+              <input
+                type="number"
+                id="weight"
+                name="weight"
+                class="form-input"
+                placeholder="e.g. 70"
+                min="1"
+                step="0.1"
+                autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="activityLevel" class="form-label">Activity Level</label>
+              <select id="activityLevel" name="activity" class="form-input">
+                <option value="" disabled selected>Select activity level</option>
+                <option value="sedentary">Sedentary</option>
+                <option value="light">Light</option>
+                <option value="moderate">Moderate</option>
+                <option value="active">Active</option>
+                <option value="very_active">Very Active</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="fitnessGoal" class="form-label">Fitness Goal</label>
+              <select id="fitnessGoal" name="goal" class="form-input">
+                <option value="" disabled selected>Select your goal</option>
+                <option value="weight_loss">Weight Loss</option>
+                <option value="weight_gain">Weight Gain</option>
+                <option value="muscle_gain">Muscle Gain</option>
+                <option value="maintenance">Maintenance</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="hero-actions">
+            <button type="submit" class="btn btn-primary" aria-label="Calculate daily calories">Calculate</button>
+            <button type="reset" class="btn btn-secondary" aria-label="Reset calorie calculator form">Reset</button>
+          </div>
+
+        </form>
+      </article>
+    </section>
+
+    <!-- ====================================================
+         DAILY CALORIES RESULT CARD (placeholder values only)
+    ===================================================== -->
+    <section aria-labelledby="calorie-result-heading">
+      <h2 class="section-heading" id="calorie-result-heading">Your Daily Calories</h2>
+
+      <article class="glass-card text-center" aria-live="polite">
+
+{% if result %}
+
+<p class="card-text">
+Maintenance Calories
+</p>
+
+<p class="stat-value">
+{{ result.maintenance }} kcal
+</p>
+
+<p class="card-title">
+{{ result.activity }}
+</p>
+
+<p class="card-text">
+Calculated using the Mifflin-St Jeor Equation.
+</p>
+
+{% else %}
+
+<p class="card-text">
+Fill the form to calculate your daily calories.
+</p>
+
+{% endif %}
+
+</article>
+    </section>
+
+    {% if result %}
+
+<section>
+
+<div class="stats-grid">
+
+<div class="stat-card">
+
+<span class="stat-label">
+BMR
+</span>
+
+<p class="stat-value">
+{{ result.bmr }}
+</p>
+
+</div>
+
+<div class="stat-card">
+
+<span class="stat-label">
+Weight Loss
+</span>
+
+<p class="stat-value">
+{{ result.weight_loss }}
+</p>
+
+</div>
+
+<div class="stat-card">
+
+<span class="stat-label">
+Maintenance
+</span>
+
+<p class="stat-value">
+{{ result.maintenance }}
+</p>
+
+</div>
+
+<div class="stat-card">
+
+<span class="stat-label">
+Weight Gain
+</span>
+
+<p class="stat-value">
+{{ result.weight_gain }}
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+{% endif %}
+    <!-- ====================================================
+         MACRONUTRIENT BREAKDOWN (placeholder values only)
+    ===================================================== -->
+    <section aria-labelledby="calorie-macros-heading">
+      <div class="section-header">
+        <span class="eyebrow">Breakdown</span>
+        <h2 class="section-heading" id="calorie-macros-heading">Macronutrient Breakdown</h2>
+        <p class="section-subtext">An approximate split of your daily calories.</p>
+      </div>
+
+      <div class="stats-grid">
+
+        <div class="stat-card">
+          <span class="stat-label">Protein</span>
+          <p class="stat-value"><!-- Placeholder -->120g</p>
+          <span class="card-text">≈ 480 kcal</span>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">Carbohydrates</span>
+          <p class="stat-value"><!-- Placeholder -->220g</p>
+          <span class="card-text">≈ 880 kcal</span>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">Fat</span>
+          <p class="stat-value"><!-- Placeholder -->60g</p>
+          <span class="card-text">≈ 540 kcal</span>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">Water</span>
+          <p class="stat-value"><!-- Placeholder -->2.5 L</p>
+          <span class="card-text">Daily target</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ====================================================
+         DAILY NUTRITION TIPS (reuses dashboard tips classes)
+    ===================================================== -->
+    <section aria-labelledby="calorie-nutrition-tips-heading">
+      <div class="section-header">
+        <span class="eyebrow">Learn</span>
+        <h2 class="section-heading" id="calorie-nutrition-tips-heading">Daily Nutrition Tips</h2>
+      </div>
+
+      <div class="tips-grid">
+
+        <aside class="tip-card" aria-label="Calorie balance tip">
+          <h3 class="card-title">Calorie Balance</h3>
+          <p class="card-text"><!-- Placeholder --> Eating slightly below or above your maintenance calories drives weight change.</p>
+        </aside>
+
+        <aside class="tip-card" aria-label="Meal timing tip">
+          <h3 class="card-title">Meal Timing</h3>
+          <p class="card-text"><!-- Placeholder --> Spreading meals evenly through the day helps maintain energy levels.</p>
+        </aside>
+
+        <aside class="tip-card" aria-label="Tracking tip">
+          <h3 class="card-title">Tracking Tip</h3>
+          <p class="card-text"><!-- Placeholder --> Logging meals for a week gives a clearer picture than a single day.</p>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- ====================================================
+         FREQUENTLY ASKED QUESTIONS
+         Accordion placeholders using native <details>/<summary>
+         -- no JavaScript required for expand/collapse behavior.
+    ===================================================== -->
+    <section aria-labelledby="calorie-faq-heading">
+      <div class="section-header">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="section-heading" id="calorie-faq-heading">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="faq-list">
+
+        <details class="glass-card">
+          <summary class="card-title">How is my calorie need calculated?</summary>
+          <p class="card-text"><!-- Placeholder --> It will be estimated from your age, gender, height, weight, and activity level once the calculation engine is connected.</p>
+        </details>
+
+        <details class="glass-card">
+          <summary class="card-title">What is a calorie deficit or surplus?</summary>
+          <p class="card-text"><!-- Placeholder --> A deficit means eating fewer calories than you burn; a surplus means eating more, used for weight loss or gain respectively.</p>
+        </details>
+
+        <details class="glass-card">
+          <summary class="card-title">Should I recalculate often?</summary>
+          <p class="card-text"><!-- Placeholder --> Recalculating every few weeks, or after a noticeable weight change, keeps the estimate accurate.</p>
+        </details>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================
+       FOOTER (same structure as dashboard.html / bmi.html / diet.html)
+  ======================================================= -->
+  <footer class="footer">
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <a href="{{ url_for('home') }}" class="navbar-brand">
+          <span class="navbar-brand-mark" aria-hidden="true"></span>
+          FitFusion AI
+        </a>
+        <p class="footer-brand-text">
+          A smart fitness recommendation system helping you calculate,
+          plan, and track your health journey.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Navigate</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('home') }}#hero">Home</a></li>
+          <li><a href="{{ url_for('home') }}#features">Features</a></li>
+          <li><a href="{{ url_for('home') }}#about">About</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Account</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('logout') }}">Log In</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      &copy; 2026 FitFusion AI. Final Year B.Sc. Computer Science Project.
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

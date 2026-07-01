@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+
+<!--
+==========================================================
+FitSaathi AI - progress.html
+
+Purpose:
+Track user fitness progress.
+
+Current Phase:
+UI Prototype
+
+Future:
+SQLite
+Charts
+Dashboard Analytics
+==========================================================
+-->
+
+<html lang="en" data-theme="light">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+
+Progress Tracker | FitSaathi AI
+
+</title>
+
+<link
+rel="stylesheet"
+href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+<div class="navbar-inner">
+
+<a
+href="{{ url_for('home') }}"
+class="navbar-brand">
+
+<span class="navbar-brand-mark"></span>
+
+FitSaathi AI
+
+</a>
+
+<nav>
+
+<ul
+class="navbar-links"
+id="navbarLinks">
+
+<li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+
+<li><a href="{{ url_for('bmi') }}">BMI</a></li>
+
+<li><a href="{{ url_for('calories') }}">Calories</a></li>
+
+<li><a href="{{ url_for('workout') }}">Workout</a></li>
+
+<li><a href="{{ url_for('diet') }}">Diet</a></li>
+
+<li><a href="{{ url_for('profile') }}">Profile</a></li>
+
+</ul>
+
+</nav>
+
+<div class="navbar-actions">
+
+<button
+class="navbar-toggle"
+id="navbarToggle">
+
+<span></span>
+<span></span>
+<span></span>
+
+</button>
+
+</div>
+
+</div>
+
+</header>
+
+<main>
+
+<section class="container">
+
+<div class="section-header">
+
+<span class="eyebrow">
+
+Progress Tracker
+
+</span>
+
+<h1 class="section-heading">
+
+Monitor Your Fitness Journey
+
+</h1>
+
+<p class="section-subtext">
+
+Track your BMI, calories,
+weight,
+workout completion,
+diet consistency
+and overall progress.
+
+</p>
+
+</div>
+
+</section>
+
+<!-- =====================================================
+Current Statistics
+===================================================== -->
+
+<section class="container">
+
+<div class="section-header">
+
+<span class="eyebrow">
+
+Overview
+
+</span>
+
+<h2 class="section-heading">
+
+Current Statistics
+
+</h2>
+
+</div>
+
+<div class="stats-grid">
+
+<div class="glass-card">
+
+<h3 class="card-title">
+
+Current Weight
+
+</h3>
+
+<p class="card-text">
+
+{{ latest.weight if latest else "--" }} kg
+
+</p>
+
+</div>
+
+<div class="glass-card">
+
+<h3 class="card-title">
+
+Current BMI
+
+</h3>
+
+<p class="card-text">
+
+{{ latest.bmi if latest else "--" }}
+
+</p>
+
+</div>
+
+<div class="glass-card">
+
+<h3 class="card-title">
+
+Daily Calories
+
+</h3>
+
+<p class="card-text">
+
+{{ latest.calories if latest else "--" }} kcal
+
+</p>
+
+</div>
+
+<div class="glass-card">
+
+<h3 class="card-title">
+
+Workout Completion
+
+</h3>
+
+<p class="card-text">
+
+{% if latest and latest.workout_completed %}
+Completed
+{% else %}
+Not Completed
+{% endif %}
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ======================================================
+Save Progress
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            Daily Progress
+        </span>
+
+        <h2 class="section-heading">
+            Log Today's Progress
+        </h2>
+
+    </div>
+
+    <form method="POST" class="progress-form">
+
+    <div class="form-grid">
+
+        <div class="form-group">
+            <label>Current Weight (kg)</label>
+            <input
+                type="number"
+                step="0.1"
+                name="weight"
+                class="form-input"
+                required>
+        </div>
+
+        <div class="form-group">
+            <label>Calories Consumed</label>
+            <input
+                type="number"
+                name="calories"
+                class="form-input"
+                required>
+        </div>
+
+        <div class="form-group">
+            <label>Water Intake (Liters)</label>
+            <input
+                type="number"
+                step="0.1"
+                name="water"
+                class="form-input"
+                required>
+        </div>
+
+        <div class="form-group checkbox-group">
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="workout_completed">
+
+                Workout Completed
+
+            </label>
+
+        </div>
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Today's Notes</label>
+
+        <textarea
+            name="notes"
+            rows="5"
+            class="form-input"
+            placeholder="Write today's fitness notes..."></textarea>
+
+    </div>
+
+    <button
+        type="submit"
+        class="btn btn-primary">
+
+        Save Progress
+
+    </button>
+
+</form>
+
+</section>
+
+<!-- ======================================================
+Progress Analytics
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            Analytics
+        </span>
+
+        <h2 class="section-heading">
+            Fitness Progress Analytics
+        </h2>
+
+        <p class="section-subtext">
+            These placeholders will display charts and progress history after backend integration.
+        </p>
+
+    </div>
+
+    <div class="features-grid">
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">📈</div>
+
+            <h3 class="card-title">
+                Weight Progress
+            </h3>
+
+            <div class="chart-container">
+               <canvas id="weightChart"></canvas>
+            </div>
+
+            <p class="card-text">
+                Current :{{ stats.current_weight if stats.current_weight else "--" }} kg
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">⚖️</div>
+
+            <h3 class="card-title">
+                BMI Trend
+            </h3>
+
+            <div class="chart-container">
+                 <canvas id="bmiChart"></canvas>
+            </div>
+
+            <p class="card-text">
+                Current BMI : {{ latest.bmi if latest else "--" }}
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">🔥</div>
+
+            <h3 class="card-title">
+                Calories History
+            </h3>
+
+            <p class="card-text">
+                Chart Placeholder
+            </p>
+
+            <p class="card-text">
+                Average :{{ stats.average_calories }} kcal
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ======================================================
+Workout & Diet Progress
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            Activity
+        </span>
+
+        <h2 class="section-heading">
+            Workout & Diet Progress
+        </h2>
+
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="glass-card">
+
+            <h3 class="card-title">
+                Workout Completion
+            </h3>
+
+            <p class="card-text">
+                {{ stats.workout_completion }}%
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <h3 class="card-title">
+                Diet Consistency
+            </h3>
+
+            <p class="card-text">
+                85%
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <h3 class="card-title">
+                Water Intake
+            </h3>
+
+            <p class="card-text">
+                {{ stats.average_water }} L     
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <h3 class="card-title">
+                Active Days
+            </h3>
+
+            <p class="card-text">
+                {{ stats.total_entries }}
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ======================================================
+Weekly Progress
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            Weekly Report
+        </span>
+
+        <h2 class="section-heading">
+            Weekly Summary
+        </h2>
+
+    </div>
+
+    <div class="features-grid">
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+                💪
+            </div>
+
+            <h3 class="card-title">
+                Workouts
+            </h3>
+
+            <p class="card-text">
+                5 of 6 sessions completed this week.
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+                🥗
+            </div>
+
+            <h3 class="card-title">
+                Diet
+            </h3>
+
+            <p class="card-text">
+                Healthy meals followed for 6 days.
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+                💧
+            </div>
+
+            <h3 class="card-title">
+                Hydration
+            </h3>
+
+            <p class="card-text">
+                Daily water goal achieved on 5 days.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ======================================================
+Achievements
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            Achievements
+        </span>
+
+        <h2 class="section-heading">
+            Milestones
+        </h2>
+
+    </div>
+
+    <div class="features-grid">
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+                🏆
+            </div>
+
+            <h3 class="card-title">
+                First Goal
+            </h3>
+
+            <p class="card-text">
+                Complete your first 7 workout sessions.
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+                ⭐
+            </div>
+
+            <h3 class="card-title">
+                Consistency
+            </h3>
+
+            <p class="card-text">
+                Maintain healthy habits for 30 consecutive days.
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+                🎯
+            </div>
+
+            <h3 class="card-title">
+                Target Weight
+            </h3>
+
+            <p class="card-text">
+                Reach your ideal weight goal.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+<!-- ======================================================
+Monthly Report
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            Monthly Report
+        </span>
+
+        <h2 class="section-heading">
+            Monthly Performance
+        </h2>
+
+        <p class="section-subtext">
+            A summary of your overall fitness performance during the month.
+        </p>
+
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="glass-card">
+
+            <h3 class="card-title">
+                Weight Lost
+            </h3>
+
+            <p class="card-text">
+                {{ stats.weight_change }} kg
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <h3 class="card-title">
+                BMI Improvement
+            </h3>
+
+            <p class="card-text">
+                24.8 → 23.4
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <h3 class="card-title">
+                Workouts Completed
+            </h3>
+
+            <p class="card-text">
+                {{ stats.total_entries }}
+                Records
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <h3 class="card-title">
+                Goal Progress
+            </h3>
+
+            <p class="card-text">
+                {{ stats.workout_completion }}%
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ======================================================
+Progress History
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            History
+        </span>
+
+        <h2 class="section-heading">
+            Progress History
+        </h2>
+
+    </div>
+
+    <div class="glass-card">
+
+        <table class="progress-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Date</th>
+                    <th>Weight</th>
+                    <th>BMI</th>
+                    <th>Calories</th>
+                    <th>Water</th>
+                    <th>Workout</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in history %}
+
+                <tr>
+
+                    <td>
+
+                        {{ item.created_at.strftime("%d-%m-%Y") }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.weight }} kg
+
+                    </td>
+
+                    <td>
+
+                        {{ item.bmi }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.calories }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.water }} L
+
+                    </td>
+
+                    <td>
+
+                        {% if item.workout_completed %}
+
+                        ✅
+
+                        {% else %}
+
+                        ❌
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            AI Coach
+        </span>
+
+        <h2 class="section-heading">
+            AI Progress Analysis
+        </h2>
+
+    </div>
+
+    <div class="glass-card">
+
+        {% if analysis %}
+
+            <p class="card-text">
+
+                {{ analysis }}
+
+            </p>
+
+        {% else %}
+
+            <p class="card-text">
+
+                AI analysis is not available yet.
+
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+<!-- ======================================================
+AI Progress Analysis
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            AI Coach
+        </span>
+
+        <h2 class="section-heading">
+            AI Progress Analysis
+        </h2>
+
+    </div>
+
+    <div class="glass-card ai-card">
+
+        <div class="ai-icon">
+            🤖
+        </div>
+
+        <h3 class="ai-title">
+
+            FitSaathi AI Coach
+
+        </h3>
+
+        {% if analysis %}
+
+        <div class="ai-text">
+
+            {{ analysis | replace('\n','<br>') | safe }}
+
+        </div>
+
+        {% else %}
+
+        <p class="card-text">
+
+            AI analysis is currently unavailable.
+
+        </p>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+<!-- ======================================================
+Health Tips
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            Health Tips
+        </span>
+
+        <h2 class="section-heading">
+            Stay Healthy & Motivated
+        </h2>
+
+    </div>
+
+    <div class="features-grid">
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+                😴
+            </div>
+
+            <h3 class="card-title">
+                Sleep Well
+            </h3>
+
+            <p class="card-text">
+                Aim for 7–9 hours of quality sleep every night for better recovery.
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+                🚶
+            </div>
+
+            <h3 class="card-title">
+                Stay Active
+            </h3>
+
+            <p class="card-text">
+                Even a short walk each day contributes to better health and fitness.
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+                🎯
+            </div>
+
+            <h3 class="card-title">
+                Stay Consistent
+            </h3>
+
+            <p class="card-text">
+                Small daily improvements lead to long-term fitness success.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ======================================================
+Frequently Asked Questions
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            FAQ
+        </span>
+
+        <h2 class="section-heading">
+            Frequently Asked Questions
+        </h2>
+
+    </div>
+
+    <div class="glass-card">
+
+        <details>
+
+            <summary>
+                How often should I check my progress?
+            </summary>
+
+            <p class="card-text">
+                Once a week is generally sufficient for tracking weight, BMI and workout consistency.
+            </p>
+
+        </details>
+
+        <hr>
+
+        <details>
+
+            <summary>
+                Why is consistency more important than intensity?
+            </summary>
+
+            <p class="card-text">
+                Consistent habits produce sustainable results over time and reduce the risk of burnout.
+            </p>
+
+        </details>
+
+        <hr>
+
+        <details>
+
+            <summary>
+                Will charts be available later?
+            </summary>
+
+            <p class="card-text">
+                Yes. Future versions will integrate Chart.js to display interactive weight, BMI and calorie history.
+            </p>
+
+        </details>
+
+        <hr>
+
+        <details>
+
+            <summary>
+                Can I compare my monthly progress?
+            </summary>
+
+            <p class="card-text">
+                Yes. Backend integration will store historical data, allowing monthly and yearly comparisons.
+            </p>
+
+        </details>
+
+    </div>
+
+</section>
+
+</main>
+🤖 AI Progress Analysis
+<!-- ======================================================
+Footer
+====================================================== -->
+
+<footer class="footer">
+
+    <div class="footer-inner">
+
+        <div class="footer-brand">
+
+            <a href="{{ url_for('home') }}" class="navbar-brand">
+
+                <span class="navbar-brand-mark"></span>
+
+                FitSaathi AI
+
+            </a>
+
+            <p class="footer-brand-text">
+                Smart Fitness Recommendation System developed as a Final Year B.Sc. Computer Science Project.
+            </p>
+
+        </div>
+
+        <div class="footer-col">
+
+            <h4 class="footer-heading">
+                Quick Links
+            </h4>
+
+            <ul class="footer-links">
+
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('bmi') }}">BMI</a></li>
+                <li><a href="{{ url_for('calories') }}">Calories</a></li>
+                <li><a href="{{ url_for('workout') }}">Workout</a></li>
+                <li><a href="{{ url_for('diet') }}">Diet</a></li>
+
+            </ul>
+
+        </div>
+
+        <div class="footer-col">
+
+            <h4 class="footer-heading">
+                Support
+            </h4>
+
+            <ul class="footer-links">
+
+                <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms &amp; Conditions</a></li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+        &copy; 2026 FitSaathi AI | Final Year B.Sc. Computer Science Project
+
+    </div>
+
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div id="chart-data"
+     data-labels='{{ (chart.labels if chart else []) | tojson | safe }}'
+     data-weights='{{ (chart.weights if chart else []) | tojson | safe }}'
+     data-bmi='{{ (chart.bmi if chart else []) | tojson | safe }}'
+     hidden></div>
+
+<script>
+
+const chartData = document.getElementById("chart-data");
+
+const labels = JSON.parse(chartData ? chartData.dataset.labels || "[]" : "[]");
+
+const weights = JSON.parse(chartData ? chartData.dataset.weights || "[]" : "[]");
+
+const bmi = JSON.parse(chartData ? chartData.dataset.bmi || "[]" : "[]");
+
+
+// ----------------------------
+// Weight Chart
+// ----------------------------
+
+const weightCanvas = document.getElementById("weightChart");
+
+if(weightCanvas){
+
+new Chart(weightCanvas,{
+
+type:"line",
+
+data:{
+
+labels:labels,
+
+datasets:[{
+
+label:"Weight (kg)",
+
+data:weights,
+
+borderWidth:3,
+
+tension:.4
+
+}]
+
+},
+
+options:{
+
+responsive:true
+
+}
+
+
+
+});
+
+}
+
+// ----------------------------
+// BMI Chart
+// ----------------------------
+
+new Chart(
+
+document.getElementById("bmiChart"),
+
+{
+
+type:"line",
+
+data:{
+
+labels:labels,
+
+datasets:[{
+
+label:"BMI",
+
+data:bmi,
+
+borderWidth:3,
+
+tension:.4
+
+}]
+
+},
+
+options:{
+
+responsive:true
+
+}
+
+}
+
+);
+
+</script>
+
+</body>
+
+</html>

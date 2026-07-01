@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<!--
+  FitFusion AI - index.html (Home Page)
+  ----------------------------------------------------------
+  Purpose:
+    Public landing page. No authentication or backend data
+    is used here -- purely static structure for the frontend
+    foundation phase.
+
+  Theme Architecture:
+    data-theme="light" is set on <html> now as the default.
+    A future toggle script will switch this to "dark" and
+    every CSS variable in variables.css will repaint
+    automatically -- no other change is needed here.
+-->
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitSaathi AI – Smart Fitness Recommendation System</title>
+  <meta name="description" content="FitSaathi AI helps you calculate your BMI, daily calories, and get personalized workout and diet recommendations.">
+
+  <!-- Single stylesheet entry point -- style.css imports everything else -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- ======================================================
+       NAVBAR
+       Fixed top navigation, responsive with mobile toggle.
+  ======================================================= -->
+  <header class="navbar">
+    <div class="navbar-inner">
+
+      <a href="{{ url_for('home') }}" class="navbar-brand">
+        <span class="navbar-brand-mark" aria-hidden="true"></span>
+        FitSaathi AI
+      </a>
+
+      <!-- Nav links: hidden on mobile until toggled open via main.js -->
+      <nav>
+        <ul class="navbar-links" id="navbarLinks">
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="navbar-actions">
+        <a href="{{ url_for('login') }}" class="btn btn-secondary">Log In</a>
+        <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a>
+
+        <!-- Mobile hamburger toggle -- behavior wired in main.js -->
+        <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ======================================================
+         HERO SECTION
+    ======================================================= -->
+    <section class="hero" id="hero">
+      <div class="hero-inner">
+
+        <div class="hero-content">
+          <span class="eyebrow">AI-Powered Fitness</span>
+          <h1 class="hero-heading">
+            Your fitness plan, <span class="gradient-text">personalized by AI</span>
+          </h1>
+          <p class="hero-subtext">
+            Calculate your BMI and daily calorie needs, then get workout and
+            diet recommendations built around your goals -- all in one
+            place, all tracked over time.
+          </p>
+          <div class="hero-actions">
+            <a href="{{ url_for('register') }}" class="btn btn-primary">Start Your Journey</a>
+            <a href="#features" class="btn btn-secondary">Explore Features</a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="glass-card">
+            <div class="hero-stat-value">24.6</div>
+            <div class="hero-stat-label">Sample BMI Score</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================
+         FEATURES SECTION (placeholder cards)
+    ======================================================= -->
+    <section class="features" id="features">
+      <div class="section-inner">
+
+        <div class="section-header">
+          <span class="eyebrow">What You Get</span>
+          <h2 class="section-heading">Everything you need to stay on track</h2>
+          <p class="section-subtext">
+            From calculations to recommendations, FitFusion AI brings every
+            fitness tool into a single dashboard.
+          </p>
+        </div>
+
+        <div class="features-grid">
+
+          <div class="glass-card">
+            <div class="card-icon-badge" aria-hidden="true">⚖</div>
+            <h3 class="card-title">BMI Calculator</h3>
+            <p class="card-text">Check your Body Mass Index instantly and track how it changes over time.</p>
+          </div>
+
+          <div class="glass-card">
+            <div class="card-icon-badge" aria-hidden="true">🔥</div>
+            <h3 class="card-title">Calorie Calculator</h3>
+            <p class="card-text">Find your daily calorie needs based on your activity level and goals.</p>
+          </div>
+
+          <div class="glass-card">
+            <div class="card-icon-badge" aria-hidden="true">🏋</div>
+            <h3 class="card-title">Workout Plans</h3>
+            <p class="card-text">Get workout recommendations tailored to your fitness goal.</p>
+          </div>
+
+          <div class="glass-card">
+            <div class="card-icon-badge" aria-hidden="true">🥗</div>
+            <h3 class="card-title">Diet Plans</h3>
+            <p class="card-text">Receive diet suggestions that match your calorie and goal targets.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         ABOUT SECTION
+    ======================================================= -->
+    <section class="about" id="about">
+      <div class="about-inner">
+
+        <div class="about-visual">
+          <div class="glass-card">
+            <div class="card-title">Track Progress</div>
+            <p class="card-text">Log your weight and view trends over time.</p>
+          </div>
+          <div class="glass-card">
+            <div class="card-title">Stay Consistent</div>
+            <p class="card-text">Set goals and follow a plan built for you.</p>
+          </div>
+        </div>
+
+        <div class="about-content">
+          <span class="eyebrow">About FitFusion AI</span>
+          <h2 class="section-heading">Built for students, by students</h2>
+          <p class="section-subtext">
+            FitFusion AI is a final year B.Sc. Computer Science project that
+            combines health calculations with simple recommendation logic.
+            The goal is to make fitness tracking approachable, while laying
+            an architecture ready for AI-based recommendations, pose
+            detection, and mobile conversion in the future.
+          </p>
+        </div>
+
+      </div>
+    </section>
+<!-- ======================================================
+     CONTACT SECTION
+======================================================= -->
+<section class="contact" id="contact">
+
+  <div class="section-inner">
+
+    <div class="section-header">
+      <span class="eyebrow">Contact Us</span>
+      <h2 class="section-heading">Get In Touch</h2>
+
+      <p class="section-subtext">
+        We'd love to hear from you. Send us your questions or feedback.
+      </p>
+    </div>
+
+    <div class="contact-container">
+
+      <!-- Left Card -->
+      <div class="glass-card contact-info">
+
+        <h3>📞 Contact Information</h3>
+
+        <div class="contact-item">
+          <span>📍</span>
+          <div>
+            <strong>Location</strong>
+            <p>Bilaspur, Chhattisgarh</p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <span>📱</span>
+          <div>
+            <strong>Phone</strong>
+            <p>+91 9329957687 (Jitesh)</p>
+            <p>+91 9131303515 (Ravi)</p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <span>📧</span>
+          <div>
+            <strong>Email</strong>
+            <p>fitnessai@gmail.com</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Card -->
+      <div class="glass-card contact-form">
+
+        <form>
+
+    <div class="input-row">
+        <input type="text" class="form-input" placeholder="Your Name" required>
+        <input type="email" class="form-input" placeholder="Your Email" required>
+    </div>
+
+    <input type="text" class="form-input" placeholder="Subject" required>
+
+    <textarea class="form-input" rows="6" placeholder="Write your message..."></textarea>
+
+    <button type="submit" class="btn btn-primary">
+        Send Message 🚀
+    </button>
+
+</form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+  </main>
+
+  <!-- ======================================================
+       FOOTER
+  ======================================================= -->
+  <footer class="footer">
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <a href="{{ url_for('home') }}" class="navbar-brand">
+          <span class="navbar-brand-mark" aria-hidden="true"></span>
+          FitFusion AI
+        </a>
+        <p class="footer-brand-text">
+          A smart fitness recommendation system helping you calculate,
+          plan, and track your health journey.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Navigate</h4>
+        <ul class="footer-links">
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Account</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('login') }}">Log In</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      &copy; 2026 FitFusion AI. Final Year B.Sc. Computer Science Project.
+    </div>
+  </footer>
+
+  <!-- Main JS -- navbar toggle + future initialization only -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+  

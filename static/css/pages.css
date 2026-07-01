@@ -1,0 +1,407 @@
+/* ==========================================================
+   FitFusion AI - pages.css
+   --------------------------------------------------------
+   Purpose:
+     Page-specific layout rules. Currently contains ONLY the
+     Home page layout, as per the foundation phase scope.
+     Future pages (dashboard, bmi, diet, workout...) will add
+     their own clearly-commented sections below, without
+     touching component definitions in components.css.
+   ========================================================== */
+
+/* ----------------------------------------------------------
+   HOME / HERO SECTION
+---------------------------------------------------------- */
+.hero {
+  position: relative;
+  padding: calc(var(--navbar-height) + var(--space-3xl)) var(--space-lg) var(--space-3xl);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Ambient gradient glow behind the hero text -- the
+   "signature" visual element tying the AI + vitality theme
+   together without relying on a generic stock illustration. */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: var(--gradient-primary);
+  filter: blur(120px);
+  opacity: 0.35;
+  z-index: -1;
+}
+
+.hero-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: var(--space-2xl);
+}
+
+.hero-heading {
+  font-family: var(--font-display);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  line-height: 1.1;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-lg);
+}
+
+.hero-heading .gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-subtext {
+  font-size: var(--fs-md);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: 480px;
+  margin-bottom: var(--space-xl);
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+/* Decorative glass panel on the hero's right side -- stands
+   in for a future live BMI/Stat widget without hardcoding
+   fake data into the foundation phase. */
+.hero-visual {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-visual .glass-card {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+
+.hero-stat-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-stat-label {
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ----------------------------------------------------------
+   FEATURES SECTION
+---------------------------------------------------------- */
+.features {
+  padding: var(--space-3xl) var(--space-lg);
+}
+
+.section-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto var(--space-2xl);
+}
+
+.section-heading {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.section-subtext {
+  font-size: var(--fs-base);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+}
+
+/* ----------------------------------------------------------
+   ABOUT SECTION
+---------------------------------------------------------- */
+.about {
+  padding: var(--space-3xl) var(--space-lg);
+}
+
+.about-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: var(--space-2xl);
+  align-items: center;
+}
+
+.about-visual {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+.about-visual .glass-card {
+  padding: var(--space-lg);
+  text-align: center;
+}
+
+.about-content .section-heading {
+  text-align: left;
+  margin-bottom: var(--space-md);
+}
+
+.about-content .section-subtext {
+  text-align: left;
+  margin-bottom: var(--space-md);
+}
+
+/* ----------------------------------------------------------
+   RESPONSIVE BREAKPOINTS (Home page only)
+---------------------------------------------------------- */
+@media (max-width: 992px) {
+  .hero-inner,
+  .about-inner {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .hero-subtext {
+    margin-inline: auto;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .about-content .section-heading,
+  .about-content .section-subtext {
+    text-align: center;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-heading {
+    font-size: var(--fs-2xl);
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-visual {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+/* CONTACT */
+
+.contact{
+    padding:100px 0;
+}
+
+.contact-container{
+    display:grid;
+    grid-template-columns:1fr 1.4fr;
+    gap:40px;
+    margin-top:60px;
+}
+
+.contact-card,
+.contact-form-card{
+
+    background:white;
+    border-radius:24px;
+    padding:35px;
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+    transition:.35s;
+}
+
+.contact-card:hover,
+.contact-form-card:hover{
+
+    transform:translateY(-10px);
+    box-shadow:0 25px 60px rgba(0,0,0,.15);
+
+}
+
+.contact-card h3,
+.contact-form h3{
+
+    margin-bottom:30px;
+    font-size:28px;
+
+}
+
+.contact-item{
+
+    display:flex;
+    gap:18px;
+    margin-bottom:30px;
+    align-items:flex-start;
+
+}
+
+.contact-item span{
+
+    font-size:28px;
+
+}
+
+.contact-item h4{
+
+    margin-bottom:5px;
+
+}
+
+.input-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    width:100%;
+}
+
+.contact-form input,
+.contact-form textarea{
+
+    width:100%;
+    padding:15px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    font-size:16px;
+    margin-bottom:18px;
+    transition:.3s;
+
+    .contact-form form{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus{
+
+    border-color:#4F46E5;
+    outline:none;
+    box-shadow:0 0 12px rgba(79,70,229,.25);
+
+}
+
+.contact-form textarea{
+
+    resize:none;
+
+}
+
+.contact-form button{
+
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:50px;
+    font-size:18px;
+    cursor:pointer;
+    transition:.3s;
+
+}
+
+.contact-form button:hover{
+
+    transform:scale(1.03);
+
+}
+
+@media(max-width:900px){
+
+.contact-container{
+
+grid-template-columns:1fr;
+
+}
+.contact-form textarea{
+    width:100%;
+    resize:none;
+}
+
+.contact-form button{
+    width:220px;
+    align-self:flex-start;
+}
+
+.input-row{
+
+grid-template-columns:1fr;
+
+}
+
+}
+.ai-section{
+
+    padding:20px;
+
+}
+
+.ai-section h4{
+
+    color:#4CAF50;
+
+    margin-top:18px;
+
+    margin-bottom:10px;
+
+    font-size:20px;
+
+}
+
+.ai-section p{
+
+    line-height:1.8;
+
+    color:#dcdcdc;
+
+}
+
+.ai-section ul{
+
+    padding-left:20px;
+
+}
+
+.ai-section li{
+
+    margin-bottom:10px;
+
+    color:white;
+
+    list-style: "✔ ";
+
+}

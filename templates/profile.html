@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<!--
+  FitFusion AI - profile.html
+  ----------------------------------------------------------
+  Purpose:
+    User Profile page -- loads the logged-in user's data
+    (passed in as `user` by routes/profile_routes.py) and
+    lets them edit and save it back. Uses only the existing
+    design system classes (glass-card, form-grid, form-group,
+    form-input, btn) -- no Bootstrap, no inline CSS/JS.
+-->
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile – FitSaathi AI</title>
+  <meta name="description" content="View and update your FitSaathi AI profile.">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- ======================================================
+       NAVBAR (same structure as dashboard.html)
+  ======================================================= -->
+  <header class="navbar">
+    <div class="navbar-inner">
+
+      <a href="{{ url_for('home') }}" class="navbar-brand">
+        <span class="navbar-brand-mark" aria-hidden="true"></span>
+        FitFusion AI
+      </a>
+
+      <nav aria-label="Primary navigation">
+        <ul class="navbar-links" id="navbarLinks">
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('bmi') }}">BMI</a></li>
+          <li><a href="{{ url_for('workout') }}">Workout</a></li>
+          <li><a href="{{ url_for('diet') }}">Diet</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="navbar-actions">
+        <a href="{{ url_for('profile') }}" class="btn btn-secondary">Profile</a>
+        <a href="{{ url_for('login') }}" class="btn btn-primary" aria-label="Log out of FitFusion AI">Log Out</a>
+
+        <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ====================================================
+         PAGE HEADER
+    ===================================================== -->
+    <section class="dashboard-header" aria-labelledby="profile-page-heading">
+      <div class="dashboard-header-content">
+        <div>
+          <span class="eyebrow">Account</span>
+          <h1 class="dashboard-title" id="profile-page-heading">My Profile</h1>
+          <p class="dashboard-subtitle">View and update your personal and fitness details.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         FLASH MESSAGES
+         Plain list using existing text classes -- no new CSS
+         was added since the project has no dedicated alert
+         component yet.
+    ===================================================== -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <section aria-live="polite" aria-label="Form messages">
+          <ul>
+            {% for category, message in messages %}
+              <li class="card-text"><strong>{{ "Error" if category == "error" else "Success" }}:</strong> {{ message }}</li>
+            {% endfor %}
+          </ul>
+        </section>
+      {% endif %}
+    {% endwith %}
+
+    <!-- ====================================================
+         PROFILE FORM
+    ===================================================== -->
+    <section aria-labelledby="profile-form-heading">
+      <h2 class="section-heading" id="profile-form-heading">Your Details</h2>
+
+      <article class="glass-card">
+        <form class="auth-form" action="{{ url_for('profile') }}" method="POST" novalidate aria-label="Profile update form">
+
+          <div class="form-grid">
+
+            <div class="form-group form-grid-full">
+              <label for="fullName" class="form-label">Full Name</label>
+              <input
+                type="text"
+                id="fullName"
+                name="full_name"
+                class="form-input"
+                value="{{ user.full_name or '' }}"
+                autocomplete="name">
+            </div>
+
+            <div class="form-group">
+              <label for="age" class="form-label">Age</label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                class="form-input"
+                value="{{ user.age if user.age is not none else '' }}"
+                min="1">
+            </div>
+
+            <div class="form-group">
+              <label for="gender" class="form-label">Gender</label>
+              <select id="gender" name="gender" class="form-input">
+                <option value="" {% if not user.gender %}selected{% endif %}>Select your gender</option>
+                <option value="male" {% if user.gender == 'male' %}selected{% endif %}>Male</option>
+                <option value="female" {% if user.gender == 'female' %}selected{% endif %}>Female</option>
+                <option value="other" {% if user.gender == 'other' %}selected{% endif %}>Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="height" class="form-label">Height (cm)</label>
+              <input
+                type="number"
+                id="height"
+                name="height"
+                class="form-input"
+                value="{{ user.height if user.height is not none else '' }}"
+                min="1"
+                step="0.1">
+            </div>
+
+            <div class="form-group">
+              <label for="weight" class="form-label">Weight (kg)</label>
+              <input
+                type="number"
+                id="weight"
+                name="weight"
+                class="form-input"
+                value="{{ user.weight if user.weight is not none else '' }}"
+                min="1"
+                step="0.1">
+            </div>
+
+          
+            <div class="form-group">
+              <label for="fitnessGoal" class="form-label">Fitness Goal</label>
+              <select id="fitnessGoal" name="goal" class="form-input">
+                <option value="" {% if not user.goal %}selected{% endif %}>Select your goal</option>
+                <option value="weight_loss" {% if user.goal == 'weight_loss' %}selected{% endif %}>Weight Loss</option>
+                <option value="weight_gain" {% if user.goal == 'weight_gain' %}selected{% endif %}>Weight Gain</option>
+                <option value="muscle_gain" {% if user.goal == 'muscle_gain' %}selected{% endif %}>Muscle Gain</option>
+                <option value="maintenance" {% if user.goal == 'maintenance' %}selected{% endif %}>Maintenance</option>
+              </select>
+            </div>
+
+          <select name="experience" class="form-input">
+
+<option value="beginner">Beginner</option>
+
+<option value="intermediate">Intermediate</option>
+
+<option value="advanced">Advanced</option>
+
+</select>
+<input
+type="number"
+name="workout_days"
+class="form-input"
+min="1"
+max="7"
+value="{{ user.workout_days }}">
+
+<select
+name="activity_level"
+class="form-input">
+
+<option value="sedentary">Sedentary</option>
+
+<option value="light">Light</option>
+
+<option value="moderate">Moderate</option>
+
+<option value="active">Active</option>
+
+<option value="very_active">Very Active</option>
+
+</select>
+
+
+          <div class="hero-actions">
+            <button type="submit" class="btn btn-primary" aria-label="Save profile changes">Save Changes</button>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary" aria-label="Cancel and return to dashboard">Cancel</a>
+          </div>
+
+        </form>
+      </article>
+    </section>
+
+  </main>
+
+  <!-- ======================================================
+       FOOTER (same structure as dashboard.html)
+  ======================================================= -->
+  <footer class="footer">
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <a href="{{ url_for('home') }}" class="navbar-brand">
+          <span class="navbar-brand-mark" aria-hidden="true"></span>
+          FitFusion AI
+        </a>
+        <p class="footer-brand-text">
+          A smart fitness recommendation system helping you calculate,
+          plan, and track your health journey.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Navigate</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('home') }}#hero">Home</a></li>
+          <li><a href="{{ url_for('home') }}#features">Features</a></li>
+          <li><a href="{{ url_for('home') }}#about">About</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Account</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('login') }}">Log In</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      &copy; 2026 FitFusion AI. Final Year B.Sc. Computer Science Project.
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

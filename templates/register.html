@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<!--
+  FitFusion AI - register.html  (redesigned)
+  – Constrained card width (~480 px), vertically stacked header text
+  – Floating labels, password-strength bar, show/hide toggle
+  – Smooth focus transitions, responsive down to mobile
+-->
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register – FitSaathi AI</title>
+  <meta name="description" content="Create your FitSaathi AI account to start tracking your BMI, calories, workouts, and diet plans.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Original stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <style>
+    /* ── Design tokens ────────────────────────────────────── */
+    :root {
+      --reg-accent:   #6c63ff;
+      --reg-accent2:  #48cfad;
+      --reg-surface:  #ffffff;
+      --reg-bg:       #f4f6fb;
+      --reg-border:   #e2e6f0;
+      --reg-text:     #1a1d2e;
+      --reg-muted:    #6b7280;
+      --reg-error:    #ef4444;
+      --reg-ok:       #22c55e;
+      --reg-warn:     #f59e0b;
+      --reg-radius:   14px;
+      --reg-shadow:   0 8px 32px rgba(108,99,255,.10);
+      --transition:   .22s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ── Page shell ───────────────────────────────────────── */
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--reg-bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Register section ─────────────────────────────────── */
+    .reg-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 1rem 3rem;   /* top offset for fixed navbar */
+    }
+
+    /* ── Page header ──────────────────────────────────────── */
+    .reg-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .reg-eyebrow {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--reg-accent);
+      background: rgba(108,99,255,.08);
+      padding: .3em .9em;
+      border-radius: 99px;
+      margin-bottom: .75rem;
+    }
+    .reg-title {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 700;
+      color: var(--reg-text);
+      margin: 0 0 .4rem;
+      line-height: 1.15;
+    }
+    .reg-sub {
+      font-size: .9rem;
+      color: var(--reg-muted);
+      max-width: 36ch;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── Card ─────────────────────────────────────────────── */
+    .reg-card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--reg-surface);
+      border-radius: var(--reg-radius);
+      box-shadow: var(--reg-shadow);
+      padding: 2.25rem 2rem;
+      border: 1px solid var(--reg-border);
+    }
+
+    /* Progress steps */
+    .reg-steps {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 1.75rem;
+    }
+    .reg-step-bar {
+      flex: 1;
+      height: 4px;
+      border-radius: 99px;
+      background: var(--reg-border);
+      transition: background var(--transition);
+    }
+    .reg-step-bar.active   { background: var(--reg-accent); }
+    .reg-step-bar.complete { background: var(--reg-accent2); }
+
+    /* ── Floating-label field ─────────────────────────────── */
+    .ff-field {
+      position: relative;
+      margin-bottom: 1.1rem;
+    }
+    .ff-field input,
+    .ff-field select {
+      width: 100%;
+      padding: 1.05rem 1rem .45rem;
+      border: 1.5px solid var(--reg-border);
+      border-radius: 10px;
+      font-size: .93rem;
+      font-family: inherit;
+      color: var(--reg-text);
+      background: #fafbfd;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      box-sizing: border-box;
+      appearance: none;
+    }
+    .ff-field input:focus,
+    .ff-field select:focus {
+      border-color: var(--reg-accent);
+      background: #fff;
+      box-shadow: 0 0 0 3.5px rgba(108,99,255,.12);
+    }
+    .ff-field input.valid   { border-color: var(--reg-ok); }
+    .ff-field input.invalid { border-color: var(--reg-error); }
+
+    .ff-label {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .88rem;
+      color: var(--reg-muted);
+      pointer-events: none;
+      transition: top var(--transition), font-size var(--transition), color var(--transition), transform var(--transition);
+    }
+    /* float up when input has value or is focused */
+    .ff-field input:focus    ~ .ff-label,
+    .ff-field input:not(:placeholder-shown) ~ .ff-label,
+    .ff-field select:focus   ~ .ff-label,
+    .ff-field select.has-val ~ .ff-label {
+      top: .55rem;
+      font-size: .68rem;
+      transform: none;
+      color: var(--reg-accent);
+      font-weight: 600;
+    }
+
+    /* Two-column row */
+    .ff-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .75rem;
+    }
+
+    /* Password toggle */
+    .ff-pw-wrap { position: relative; }
+    .ff-pw-wrap input { padding-right: 2.8rem; }
+    .pw-toggle {
+      position: absolute;
+      right: .8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--reg-muted);
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+    .pw-toggle:hover { color: var(--reg-accent); }
+    .pw-toggle svg { width: 18px; height: 18px; }
+
+    /* Password strength */
+    .pw-strength {
+      margin-top: .35rem;
+      height: 4px;
+      border-radius: 99px;
+      background: var(--reg-border);
+      overflow: hidden;
+    }
+    .pw-strength-fill {
+      height: 100%;
+      border-radius: 99px;
+      width: 0;
+      transition: width .35s ease, background .35s ease;
+    }
+    .pw-hint {
+      font-size: .7rem;
+      color: var(--reg-muted);
+      margin-top: .2rem;
+    }
+
+    /* Select arrow */
+    .ff-select-wrap { position: relative; }
+    .ff-select-wrap::after {
+      content: '';
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--reg-muted);
+      pointer-events: none;
+    }
+
+    /* Inline field icon (validation tick / cross) */
+    .field-icon {
+      position: absolute;
+      right: .85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .85rem;
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .ff-field input.valid  ~ .field-icon { opacity: 1; color: var(--reg-ok); }
+    .ff-field input.invalid ~ .field-icon { opacity: 1; color: var(--reg-error); }
+
+    /* Submit button */
+    .reg-submit {
+      width: 100%;
+      padding: .85rem;
+      margin-top: .5rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--reg-accent) 0%, #8b5cf6 100%);
+      color: #fff;
+      letter-spacing: .01em;
+      transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .reg-submit:hover  { opacity: .92; box-shadow: 0 6px 20px rgba(108,99,255,.35); transform: translateY(-1px); }
+    .reg-submit:active { transform: translateY(0); box-shadow: none; }
+    .reg-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    .reg-login-hint {
+      text-align: center;
+      font-size: .85rem;
+      color: var(--reg-muted);
+      margin-top: 1.1rem;
+    }
+    .reg-login-hint a {
+      color: var(--reg-accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .reg-login-hint a:hover { text-decoration: underline; }
+
+    /* Error message */
+    .field-error {
+      font-size: .7rem;
+      color: var(--reg-error);
+      margin-top: .2rem;
+      min-height: 1em;
+    }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 540px) {
+      .reg-card  { padding: 1.6rem 1.1rem; }
+      .ff-row    { grid-template-columns: 1fr; gap: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="navbar-inner">
+      <a href="{{ url_for('home') }}" class="navbar-brand">
+        <span class="navbar-brand-mark" aria-hidden="true"></span>
+        FitFusion AI
+      </a>
+      <nav>
+        <ul class="navbar-links" id="navbarLinks">
+          <li><a href="{{ url_for('home') }}#hero">Home</a></li>
+          <li><a href="{{ url_for('home') }}#features">Features</a></li>
+          <li><a href="{{ url_for('home') }}#about">About</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="navbar-actions">
+        <a href="{{ url_for('login') }}"    class="btn btn-secondary">Log In</a>
+        <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a>
+        <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <section class="reg-section">
+
+      <!-- Header -->
+      <div class="reg-header">
+        <span class="reg-eyebrow">Create Account</span>
+        <h1 class="reg-title">Join FitFusion AI</h1>
+        <p class="reg-sub">Set up your profile to get personalized BMI, calorie, workout, and diet recommendations.</p>
+      </div>
+
+      <!-- Card -->
+      <div class="reg-card">
+
+        <!-- Step progress bars (decorative; JS updates them) -->
+        <div class="reg-steps" aria-hidden="true">
+          <div class="reg-step-bar active"   id="step1"></div>
+          <div class="reg-step-bar"          id="step2"></div>
+          <div class="reg-step-bar"          id="step3"></div>
+        </div>
+
+        <!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-container">
+
+            {% for category, message in messages %}
+
+                <div class="flash-message flash-{{ category }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        </div>
+    {% endif %}
+{% endwith %}
+
+        <form action="{{ url_for('register') }}" method="POST" novalidate id="regForm">
+
+          <!-- Full Name -->
+          <div class="ff-field">
+            <input type="text" id="fullName" name="full_name" class="form-input" placeholder=" "
+                   autocomplete="name" required>
+            <label for="fullName" class="ff-label">Full Name</label>
+            <span class="field-icon" aria-hidden="true">✓</span>
+            <div class="field-error" id="err-name"></div>
+          </div>
+
+          <!-- Email -->
+          <div class="ff-field">
+            <input type="email" id="email" name="email" class="form-input" placeholder=" "
+                   autocomplete="email" required>
+            <label for="email" class="ff-label">Email</label>
+            <span class="field-icon" aria-hidden="true">✓</span>
+            <div class="field-error" id="err-email"></div>
+          </div>
+
+          <!-- Password -->
+          <div class="ff-field ff-pw-wrap">
+            <input type="password" id="password" name="password" class="form-input" placeholder=" "
+                   autocomplete="new-password" required>
+            <label for="password" class="ff-label">Password</label>
+            <button type="button" class="pw-toggle" aria-label="Show password" data-target="password">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+            <div class="pw-strength"><div class="pw-strength-fill" id="pwFill"></div></div>
+            <div class="pw-hint" id="pwHint"></div>
+            <div class="field-error" id="err-pw"></div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="ff-field ff-pw-wrap">
+            <input type="password" id="confirmPassword" name="confirm_password" class="form-input" placeholder=" "
+                   autocomplete="new-password" required>
+            <label for="confirmPassword" class="ff-label">Confirm Password</label>
+            <button type="button" class="pw-toggle" aria-label="Show confirm password" data-target="confirmPassword">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+            <div class="field-error" id="err-cpw"></div>
+          </div>
+
+          <!-- Age + Gender (two columns) -->
+          <div class="ff-row">
+            <div class="ff-field">
+              <input type="number" id="age" name="age" class="form-input" placeholder=" " min="1" max="120" required>
+              <label for="age" class="ff-label">Age</label>
+              <div class="field-error" id="err-age"></div>
+            </div>
+
+            <div class="ff-field ff-select-wrap">
+              <select id="gender" name="gender" class="form-input" required>
+                <option value="" disabled selected></option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+              <label for="gender" class="ff-label">Gender</label>
+              <div class="field-error" id="err-gender"></div>
+            </div>
+          </div>
+
+          <!-- Height + Weight (two columns) -->
+          <div class="ff-row">
+            <div class="ff-field">
+              <input type="number" id="height" name="height_cm" class="form-input" placeholder=" " min="1" step="0.1" required>
+              <label for="height" class="ff-label">Height (cm)</label>
+              <div class="field-error" id="err-height"></div>
+            </div>
+
+            <div class="ff-field">
+              <input type="number" id="weight" name="weight_kg" class="form-input" placeholder=" " min="1" step="0.1" required>
+              <label for="weight" class="ff-label">Weight (kg)</label>
+              <div class="field-error" id="err-weight"></div>
+            </div>
+          </div>
+
+          <button type="submit" class="reg-submit" id="regBtn">Create My Account</button>
+
+        </form>
+
+        <p class="reg-login-hint">Already have an account? <a href="{{ url_for('login') }}">Log In</a></p>
+
+      </div><!-- /card -->
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="{{ url_for('home') }}" class="navbar-brand">
+          <span class="navbar-brand-mark" aria-hidden="true"></span>
+          FitFusion AI
+        </a>
+        <p class="footer-brand-text">A smart fitness recommendation system helping you calculate, plan, and track your health journey.</p>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Navigate</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('home') }}#hero">Home</a></li>
+          <li><a href="{{ url_for('home') }}#features">Features</a></li>
+          <li><a href="{{ url_for('home') }}#about">About</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Account</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('login') }}">Log In</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 FitFusion AI. Final Year B.Sc. Computer Science Project.</div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+  <script>
+  /* ── Interactive enhancements ─────────────────────────── */
+  (function () {
+
+    /* --- floating-label select fix --- */
+    const gender = document.getElementById('gender');
+    gender.addEventListener('change', () => {
+      gender.classList.toggle('has-val', gender.value !== '');
+    });
+
+    /* --- password show/hide toggle --- */
+    document.querySelectorAll('.pw-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const inp = document.getElementById(btn.dataset.target);
+        const isText = inp.type === 'text';
+        inp.type = isText ? 'password' : 'text';
+        btn.setAttribute('aria-label', isText ? 'Show password' : 'Hide password');
+        /* swap icon */
+        btn.querySelector('svg').innerHTML = isText
+          ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'
+          : '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+      });
+    });
+
+    /* --- password strength --- */
+    const pwInput = document.getElementById('password');
+    const pwFill  = document.getElementById('pwFill');
+    const pwHint  = document.getElementById('pwHint');
+    const levels  = [
+      { w: '20%', bg: '#ef4444', label: 'Too short' },
+      { w: '40%', bg: '#f59e0b', label: 'Weak' },
+      { w: '65%', bg: '#eab308', label: 'Fair' },
+      { w: '85%', bg: '#22c55e', label: 'Good' },
+      { w: '100%',bg: '#16a34a', label: 'Strong' },
+    ];
+    function scorePassword(p) {
+      let s = 0;
+      if (p.length >= 8)  s++;
+      if (p.length >= 12) s++;
+      if (/[A-Z]/.test(p)) s++;
+      if (/[0-9]/.test(p)) s++;
+      if (/[^A-Za-z0-9]/.test(p)) s++;
+      return Math.min(s, 4);
+    }
+    pwInput.addEventListener('input', () => {
+      const v = pwInput.value;
+      if (!v) { pwFill.style.width = '0'; pwHint.textContent = ''; return; }
+      const l = levels[scorePassword(v)];
+      pwFill.style.width = l.w;
+      pwFill.style.background = l.bg;
+      pwHint.textContent = l.label;
+      pwHint.style.color = l.bg;
+    });
+
+    /* --- live validation helpers --- */
+    function setValid(inp, errId, ok, msg) {
+      inp.classList.toggle('valid',   ok);
+      inp.classList.toggle('invalid', !ok && inp.value !== '');
+      document.getElementById(errId).textContent = (!ok && inp.value !== '') ? msg : '';
+    }
+
+    document.getElementById('fullName').addEventListener('input', function () {
+      setValid(this, 'err-name', this.value.trim().length >= 2, 'Enter at least 2 characters.');
+    });
+
+    document.getElementById('email').addEventListener('input', function () {
+      setValid(this, 'err-email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.value), 'Enter a valid email.');
+    });
+
+    document.getElementById('confirmPassword').addEventListener('input', function () {
+      const match = this.value === pwInput.value;
+      setValid(this, 'err-cpw', match, 'Passwords do not match.');
+    });
+
+    document.getElementById('age').addEventListener('input', function () {
+      const v = parseInt(this.value);
+      setValid(this, 'err-age', v >= 5 && v <= 120, 'Enter a valid age (5–120).');
+    });
+
+    document.getElementById('height').addEventListener('input', function () {
+      setValid(this, 'err-height', parseFloat(this.value) > 0, 'Enter a valid height.');
+    });
+
+    document.getElementById('weight').addEventListener('input', function () {
+      setValid(this, 'err-weight', parseFloat(this.value) > 0, 'Enter a valid weight.');
+    });
+
+    /* --- step-progress bar update based on filled fields --- */
+    const allFields = ['fullName','email','password','confirmPassword','age','gender','height','weight'];
+    const bars = [document.getElementById('step1'), document.getElementById('step2'), document.getElementById('step3')];
+    function updateSteps() {
+      const filled = allFields.filter(id => document.getElementById(id).value !== '').length;
+      const pct = filled / allFields.length;
+      bars.forEach((b, i) => {
+        const threshold = (i + 1) / bars.length;
+        b.classList.toggle('complete', pct >= threshold);
+        b.classList.toggle('active',   pct >= threshold - 1/bars.length && pct < threshold);
+      });
+      if (pct === 0) bars[0].classList.add('active');
+    }
+    allFields.forEach(id => document.getElementById(id).addEventListener('input', updateSteps));
+    updateSteps();
+
+    /* --- submit guard --- */
+    document.getElementById('regForm').addEventListener('submit', function (e) {
+      const btn = document.getElementById('regBtn');
+      btn.disabled = true;
+      btn.textContent = 'Creating account…';
+      /* re-enable if server returns (Jinja re-renders) after short delay */
+      setTimeout(() => { btn.disabled = false; btn.textContent = 'Create My Account'; }, 8000);
+    });
+
+  })();
+  </script>
+</body>
+</html>

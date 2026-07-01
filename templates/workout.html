@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<!--
+==========================================================
+FitFusion AI - workout.html
+
+Purpose:
+Workout Recommendation Module
+
+UI Prototype Only
+
+Backend:
+Not implemented yet.
+
+Future Integration:
+SQLite
+Flask
+AI Recommendation
+==========================================================
+-->
+
+<html lang="en" data-theme="light">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Workout Planner | FitSaathi AI</title>
+
+    <meta
+        name="description"
+        content="Generate personalized workout plans using FitSaathi AI.">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<!-- ======================================================
+Navbar
+====================================================== -->
+
+<header class="navbar">
+
+    <div class="navbar-inner">
+
+        <a href="{{ url_for('home') }}"
+           class="navbar-brand">
+
+            <span class="navbar-brand-mark"></span>
+
+            FitFusion AI
+
+        </a>
+
+        <nav>
+
+            <ul class="navbar-links"
+                id="navbarLinks">
+
+                <li>
+                    <a href="{{ url_for('home') }}">
+                        Home
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('dashboard') }}">
+                        Dashboard
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('bmi') }}">
+                        BMI
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('calories') }}">
+                        Calories
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('workout') }}">
+                        Workout
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('diet') }}">
+                        Diet
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('contact') }}">
+                        Contact
+                    </a>
+                </li>
+
+            </ul>
+
+        </nav>
+
+        <div class="navbar-actions">
+
+            <a href="{{ url_for('profile') }}"
+               class="btn btn-secondary">
+
+                Profile
+
+            </a>
+
+            <button
+                class="navbar-toggle"
+                id="navbarToggle">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+<!-- ======================================================
+Main
+====================================================== -->
+
+<main>
+
+<section class="container">
+
+<div class="section-header">
+
+<span class="eyebrow">
+
+Workout Planner
+
+</span>
+
+<h1 class="section-heading">
+
+Build Your Personalized Workout Routine
+
+</h1>
+
+<p class="section-subtext">
+
+Choose your fitness goal and preferences to generate
+a personalized workout plan.
+
+</p>
+
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+
+<div class="flash-container">
+
+{% for category, message in messages %}
+
+<div class="flash-message flash-{{ category }}">
+{{ message }}
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+{% endwith %}
+
+<!-- ======================================================
+Workout Form
+====================================================== -->
+
+<div class="glass-card">
+
+<form
+action="{{ url_for('workout') }}"
+method="POST"
+novalidate>
+
+<div class="form-group">
+
+    <label class="form-label">Age</label>
+
+    <input
+        type="number"
+        name="age"
+        class="form-input"
+        required>
+
+</div>
+
+<div class="form-group">
+
+    <label class="form-label">Gender</label>
+
+    <select
+        name="gender"
+        class="form-input"
+        required>
+
+        <option value="">Select Gender</option>
+
+        <option value="male">Male</option>
+
+        <option value="female">Female</option>
+
+    </select>
+
+</div>
+
+<div class="form-group">
+
+    <label class="form-label">Height (cm)</label>
+
+    <input
+        type="number"
+        name="height"
+        class="form-input"
+        required>
+
+</div>
+
+<div class="form-group">
+
+    <label class="form-label">Weight (kg)</label>
+
+    <input
+        type="number"
+        name="weight"
+        class="form-input"
+        required>
+
+</div>
+
+<div class="form-group">
+
+    <label class="form-label">Fitness Goal</label>
+
+    <select
+        name="goal"
+        class="form-input"
+        required>
+
+        <option value="weight loss">Weight Loss</option>
+
+        <option value="muscle gain">Muscle Gain</option>
+
+        <option value="maintenance">Maintenance</option>
+
+    </select>
+
+</div>
+
+<div class="form-group">
+
+    <label class="form-label">Experience</label>
+
+    <select
+        name="experience"
+        class="form-input"
+        required>
+
+        <option value="beginner">Beginner</option>
+
+        <option value="intermediate">Intermediate</option>
+
+        <option value="advanced">Advanced</option>
+
+    </select>
+
+</div>
+
+<div class="form-group">
+
+    <label class="form-label">Workout Days</label>
+
+    <select
+        name="workout_days"
+        class="form-input"
+        required>
+
+        <option value="3">3 Days</option>
+
+        <option value="4">4 Days</option>
+
+        <option value="5">5 Days</option>
+
+        <option value="6">6 Days</option>
+
+    </select>
+
+</div>
+
+<div class="hero-actions">
+
+<button
+type="submit"
+class="btn btn-primary">
+
+Generate Workout Plan
+
+</button>
+
+<button
+type="reset"
+class="btn btn-secondary">
+
+Reset
+
+</button>
+
+</div>
+</form>
+
+</div>
+
+</section>
+<!-- ======================================================
+Today's Workout
+====================================================== -->
+
+<section class="container">
+
+    <div class="glass-card">
+
+{% if result %}
+
+<div class="stats-grid">
+
+<div class="glass-card">
+
+<h3 class="card-title">
+Goal
+</h3>
+
+<p class="card-text">
+{{ result.goal }}
+</p>
+
+</div>
+
+<div class="glass-card">
+
+<h3 class="card-title">
+BMI
+</h3>
+
+<p class="card-text">
+{{ result.bmi }}
+</p>
+
+</div>
+
+<div class="glass-card">
+
+<h3 class="card-title">
+Category
+</h3>
+
+<p class="card-text">
+{{ result.bmi_category }}
+</p>
+
+</div>
+
+<div class="glass-card">
+
+<h3 class="card-title">
+Workout Days
+</h3>
+
+<p class="card-text">
+{{ result.workout_days }} Days
+</p>
+
+</div>
+
+</div>
+
+<br>
+
+<div class="glass-card">
+
+<h3 class="card-title">
+
+AI Recommendation
+
+</h3>
+
+{% if result %}
+
+<div class="glass-card mt-4">
+
+    <h2 class="section-title">
+        🤖 AI Workout Coach
+    </h2>
+
+    <div class="ai-section">
+
+        <h4>🎯 Goal Analysis</h4>
+        <p>{{ result.recommendation.goal_analysis }}</p>
+
+        <hr>
+
+        <h4>📅 Weekly Strategy</h4>
+        <p>{{ result.recommendation.weekly_strategy }}</p>
+
+        <hr>
+
+        <h4>🔥 Warm-up</h4>
+
+        <ul>
+
+        {% for item in result.recommendation.warmup %}
+
+            <li>{{ item }}</li>
+
+        {% endfor %}
+
+        </ul>
+
+        <hr>
+
+        <h4>💪 Workout Tips</h4>
+
+        <ul>
+
+        {% for item in result.recommendation.workout_tips %}
+
+            <li>{{ item }}</li>
+
+        {% endfor %}
+
+        </ul>
+
+        <hr>
+
+        <h4>😴 Recovery</h4>
+
+        <ul>
+
+        {% for item in result.recommendation.recovery %}
+
+            <li>{{ item }}</li>
+
+        {% endfor %}
+
+        </ul>
+
+        <hr>
+
+        <h4>⭐ Coach Tip</h4>
+
+        <p>
+
+            {{ result.recommendation.coach_tip }}
+
+        </p>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+<div class="glass-card">
+
+    <h3 class="card-title">
+        Estimated Weekly Calories Burn
+    </h3>
+
+    <p class="stat-value">
+        {{ result.estimated_weekly_calories }} kcal
+    </p>
+
+</div>
+
+
+{% else %}
+
+<p class="card-text">
+
+Generate a workout plan to see your recommendation.
+
+</p>
+
+{% endif %}
+
+</div>
+</section>
+
+<!-- ======================================================
+Weekly Workout Schedule
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+
+            Weekly Plan
+
+        </span>
+
+        <h2 class="section-heading">
+
+            Weekly Workout Schedule
+
+        </h2>
+
+    </div>
+
+    <div class="stats-grid">
+
+        {% if result %}
+
+<div class="stats-grid">
+
+{% for day, exercises in result.weekly_plan.items() %}
+
+<div class="glass-card">
+
+<h3 class="card-title">
+{{ day }}
+</h3>
+
+<ul>
+
+{% for exercise in exercises %}
+
+{% if exercise is string %}
+
+<li>{{ exercise }}</li>
+
+{% else %}
+
+<li>
+
+<strong>{{ exercise.exercise }}</strong><br>
+
+Sets: {{ exercise.sets }}<br>
+
+Rest: {{ exercise.rest }}<br>
+
+Calories: {{ exercise.calories }} kcal
+
+</li>
+
+{% endif %}
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+{% endfor %}
+
+{% if result %}
+
+<div class="stats-grid">
+
+{% for day, exercises in result.weekly_plan.items() %}
+
+<div class="glass-card">
+
+<h3 class="card-title">{{ day }}</h3>
+
+<ul>
+
+{% for exercise in exercises %}
+
+    {% if exercise is string %}
+
+        <li>{{ exercise }}</li>
+
+    {% else %}
+
+        <li>
+            <strong>{{ exercise.exercise }}</strong><br>
+            Sets: {{ exercise.sets }}<br>
+            Rest: {{ exercise.rest }}<br>
+            Calories: {{ exercise.calories }} kcal
+        </li>
+
+    {% endif %}
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="glass-card">
+
+<p class="card-text">
+
+Your weekly workout plan will appear here.
+
+</p>
+
+</div>
+
+{% endif %}
+
+</div>
+
+{% else %}
+
+<div class="glass-card">
+
+<p class="card-text">
+
+Your weekly workout plan will appear here.
+
+</p>
+
+</div>
+
+{% endif %}
+    </div>
+
+</section>
+
+<!-- ======================================================
+Exercise Library
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+
+            Exercises
+
+        </span>
+
+        <h2 class="section-heading">
+
+            Exercise Library
+
+        </h2>
+
+        <p class="section-subtext">
+
+            These exercises are examples only. Dynamic recommendations
+            will be generated after backend integration.
+
+        </p>
+
+    </div>
+
+    <div class="features-grid">
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+                💪
+            </div>
+
+            <h3 class="card-title">
+
+                Push Ups
+
+            </h3>
+
+            <p class="card-text">
+
+                3 Sets × 15 Reps
+
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+
+                🦵
+
+            </div>
+
+            <h3 class="card-title">
+
+                Squats
+
+            </h3>
+
+            <p class="card-text">
+
+                4 Sets × 12 Reps
+
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+
+                🧘
+
+            </div>
+
+            <h3 class="card-title">
+
+                Plank
+
+            </h3>
+
+            <p class="card-text">
+
+                60 Seconds × 3
+
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+
+                🏃
+
+            </div>
+
+            <h3 class="card-title">
+
+                Jumping Jacks
+
+            </h3>
+
+            <p class="card-text">
+
+                30 Reps
+
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+
+                🏋
+
+            </div>
+
+            <h3 class="card-title">
+
+                Lunges
+
+            </h3>
+
+            <p class="card-text">
+
+                3 Sets × 12
+
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <div class="card-icon-badge">
+
+                🔥
+
+            </div>
+
+            <h3 class="card-title">
+
+                Burpees
+
+            </h3>
+
+            <p class="card-text">
+
+                15 Reps
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ======================================================
+Workout Benefits
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            Benefits
+        </span>
+
+        <h2 class="section-heading">
+            Why Follow a Workout Routine?
+        </h2>
+
+        <p class="section-subtext">
+            Regular exercise improves your physical and mental health while helping you achieve your fitness goals.
+        </p>
+
+    </div>
+
+    <div class="features-grid">
+
+        <div class="glass-card">
+            <div class="card-icon-badge">💪</div>
+            <h3 class="card-title">Build Strength</h3>
+            <p class="card-text">
+                Increase muscle strength, endurance and improve overall body performance.
+            </p>
+        </div>
+
+        <div class="glass-card">
+            <div class="card-icon-badge">❤️</div>
+            <h3 class="card-title">Healthy Heart</h3>
+            <p class="card-text">
+                Cardio workouts improve heart health and boost blood circulation.
+            </p>
+        </div>
+
+        <div class="glass-card">
+            <div class="card-icon-badge">🧠</div>
+            <h3 class="card-title">Mental Wellness</h3>
+            <p class="card-text">
+                Exercise reduces stress, improves mood and increases confidence.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ======================================================
+Workout Tips
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            Tips
+        </span>
+
+        <h2 class="section-heading">
+            Workout Tips
+        </h2>
+
+    </div>
+
+    <div class="features-grid">
+
+        <div class="glass-card">
+            <h3 class="card-title">
+                Warm Up
+            </h3>
+
+            <p class="card-text">
+                Spend 5–10 minutes warming up before every workout to reduce injury risk.
+            </p>
+        </div>
+
+        <div class="glass-card">
+
+            <h3 class="card-title">
+                Stay Hydrated
+            </h3>
+
+            <p class="card-text">
+                Drink enough water before, during and after every workout session.
+            </p>
+
+        </div>
+
+        <div class="glass-card">
+
+            <h3 class="card-title">
+                Recovery
+            </h3>
+
+            <p class="card-text">
+                Allow proper rest between workout sessions to help muscles recover.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ======================================================
+FAQ
+====================================================== -->
+
+<section class="container">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            FAQ
+        </span>
+
+        <h2 class="section-heading">
+            Frequently Asked Questions
+        </h2>
+
+    </div>
+
+    <div class="glass-card">
+
+        <details>
+
+            <summary>
+                How many days should I work out?
+            </summary>
+
+            <p class="card-text">
+                Beginners can start with 3 days per week. Intermediate users may train 4–5 days, while advanced users can train 5–6 days with proper recovery.
+            </p>
+
+        </details>
+
+        <hr>
+
+        <details>
+
+            <summary>
+                Is rest day important?
+            </summary>
+
+            <p class="card-text">
+                Yes. Recovery allows muscles to repair and grow, reducing the risk of injury.
+            </p>
+
+        </details>
+
+        <hr>
+
+        <details>
+
+            <summary>
+                Should I do cardio every day?
+            </summary>
+
+            <p class="card-text">
+                Light cardio can be performed regularly, but intense cardio should be balanced with strength training and adequate recovery.
+            </p>
+
+        </details>
+
+        <hr>
+
+        <details>
+
+            <summary>
+                Can beginners use this workout planner?
+            </summary>
+
+            <p class="card-text">
+                Yes. The planner is designed for beginners, intermediate and advanced users, and future backend logic will generate personalized recommendations.
+            </p>
+
+        </details>
+
+    </div>
+
+</section>
+
+</main>
+
+<!-- ======================================================
+Footer
+====================================================== -->
+
+<footer class="footer">
+
+    <div class="footer-inner">
+
+        <div class="footer-brand">
+
+            <a href="{{ url_for('home') }}" class="navbar-brand">
+
+                <span class="navbar-brand-mark"></span>
+
+                FitFusion AI
+
+            </a>
+
+            <p class="footer-brand-text">
+                Smart Fitness Recommendation System developed as a Final Year B.Sc. Computer Science Project.
+            </p>
+
+        </div>
+
+        <div class="footer-col">
+
+            <h4 class="footer-heading">
+                Quick Links
+            </h4>
+
+            <ul class="footer-links">
+
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+
+                <li><a href="{{ url_for('bmi') }}">BMI</a></li>
+
+                <li><a href="{{ url_for('calories') }}">Calories</a></li>
+
+                <li><a href="{{ url_for('workout') }}">Workout</a></li>
+
+                <li><a href="{{ url_for('diet') }}">Diet</a></li>
+
+            </ul>
+
+        </div>
+
+        <div class="footer-col">
+
+            <h4 class="footer-heading">
+                Support
+            </h4>
+
+            <ul class="footer-links">
+
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+
+                <li><a href="{{ url_for('profile') }}">Profile</a></li>
+
+                <li><a href="#">Privacy Policy</a></li>
+
+                <li><a href="#">Terms & Conditions</a></li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+        © 2026 FitFusion AI | Final Year Project | B.Sc. Computer Science
+
+    </div>
+
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+
+</html>

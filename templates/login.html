@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<!--
+  FitFusion AI - login.html
+  ----------------------------------------------------------
+  Purpose:
+    User login page. Mirrors register.html's structure and
+    reuses the same navbar, footer, and auth-* / component
+    classes from style.css (which already imports auth.css).
+    No backend logic, validation, or JavaScript is included.
+-->
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In – FitSaathi AI</title>
+  <meta name="description" content="Log in to your FitSaathi AI account to access your BMI, calorie, workout, and diet dashboard.">
+
+  <!-- Single stylesheet entry point -- auth.css is imported through style.css -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<script>
+
+function togglePassword(){
+
+const password=document.getElementById("password");
+
+if(password.type==="password"){
+
+password.type="text";
+
+}else{
+
+password.type="password";
+
+}
+
+}
+
+</script>
+<body>
+
+  <!-- ======================================================
+       NAVBAR (same structure as index.html / register.html)
+  ======================================================= -->
+  <header class="navbar">
+    <div class="navbar-inner">
+
+      <a href="{{ url_for('home') }}" class="navbar-brand">
+        <span class="navbar-brand-mark" aria-hidden="true"></span>
+        FitFusion AI
+      </a>
+
+      <nav>
+        <ul class="navbar-links" id="navbarLinks">
+          <li><a href="{{ url_for('home') }}#hero">Home</a></li>
+          <li><a href="{{ url_for('home') }}#features">Features</a></li>
+          <li><a href="{{ url_for('home') }}#about">About</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="navbar-actions">
+        <a href="{{ url_for('login') }}" class="btn btn-secondary">Log In</a>
+        <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a>
+
+        <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ======================================================
+       LOGIN FORM SECTION
+  ======================================================= -->
+  <main>
+    <section class="auth-page container">
+      <div class="auth-card glass-card">
+
+        <div class="auth-header">
+          <span class="eyebrow">Welcome Back</span>
+          <h1 class="auth-title">Log In to FitFusion AI</h1>
+          <p class="auth-subtitle">
+            Enter your details to access your dashboard, track progress, and view your recommendations.
+          </p>
+        </div>
+        <!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+
+<div class="flash-container">
+
+    {% for category, message in messages %}
+
+        <div class="flash-message flash-{{ category }}">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endif %}
+{% endwith %}
+
+        <form class="auth-form" action="{{ url_for('login') }}" method="POST" novalidate aria-label="Login form">
+
+          <div class="form-grid">
+
+    <div class="form-group form-grid-full">
+        <label class="form-label">📧 Email Address</label>
+        <input
+            type="email"
+            id="email"
+            name="email"
+            class="form-input"
+            placeholder="Enter your email"
+            required>
+    </div>
+
+    <div class="form-group form-grid-full">
+
+        <label class="form-label">🔒 Password</label>
+
+        <div class="password-box">
+
+            <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="form-input"
+                  placeholder="Enter your password">
+
+            <span class="toggle-password"
+            onclick="togglePassword()">👁</span>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="remember-row">
+
+    <label class="remember-checkbox">
+        <input type="checkbox" id="rememberMe">
+        Remember Me
+    </label>
+
+    <a href="#" class="forgot-password">
+        Forgot Password?
+    </a>
+
+</div>
+
+<button type="submit" class="btn btn-primary auth-submit">
+    Log In
+</button>
+
+<div class="auth-divider">OR</div>
+
+<button type="button" class="btn btn-secondary auth-google-btn">
+    Continue with Google
+</button>
+
+        <p class="auth-helper-text">
+          Don't have an account?
+          <a href="{{ url_for('register') }}">Register</a>
+        </p>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ======================================================
+       FOOTER (same structure as index.html / register.html)
+  ======================================================= -->
+  <footer class="footer">
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <a href="{{ url_for('home') }}" class="navbar-brand">
+          <span class="navbar-brand-mark" aria-hidden="true"></span>
+          FitFusion AI
+        </a>
+        <p class="footer-brand-text">
+          A smart fitness recommendation system helping you calculate,
+          plan, and track your health journey.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Navigate</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('home') }}#hero">Home</a></li>
+          <li><a href="{{ url_for('home') }}#features">Features</a></li>
+          <li><a href="{{ url_for('home') }}#about">About</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Account</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('login') }}">Log In</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      &copy; 2026 FitFusion AI. Final Year B.Sc. Computer Science Project.
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Log In | FitFusion AI</title>
+
+    <meta name="description"
+        content="Securely log in to FitFusion AI and continue your personalized fitness journey.">
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<!-- ==========================================================
+     NAVBAR
+=========================================================== -->
+
+<header class="navbar">
+
+    <div class="navbar-inner">
+
+        <a href="{{ url_for('home') }}"
+           class="navbar-brand">
+
+            <span class="navbar-brand-mark"></span>
+
+            FitFusion AI
+
+        </a>
+
+        <nav>
+
+            <ul
+                class="navbar-links"
+                id="navbarLinks">
+
+                <li><a href="{{ url_for('home') }}#hero">Home</a></li>
+
+                <li><a href="{{ url_for('home') }}#features">Features</a></li>
+
+                <li><a href="{{ url_for('home') }}#about">About</a></li>
+
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+
+            </ul>
+
+        </nav>
+
+        <div class="navbar-actions">
+
+            <a href="{{ url_for('login') }}"
+               class="btn btn-secondary">
+
+                Log In
+
+            </a>
+
+            <a href="{{ url_for('register') }}"
+               class="btn btn-primary">
+
+                Get Started
+
+            </a>
+
+            <button
+                class="navbar-toggle"
+                id="navbarToggle"
+                aria-label="Toggle Navigation">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+<!-- ==========================================================
+     LOGIN SECTION
+=========================================================== -->
+
+<main class="auth-page">
+
+    <!-- Decorative Background -->
+
+    <div class="auth-background">
+
+        <div class="auth-blob blob-one"></div>
+
+        <div class="auth-blob blob-two"></div>
+
+        <div class="auth-grid"></div>
+
+    </div>
+
+    <section class="auth-wrapper">
+
+        <div class="auth-card login-card">
+
+            <!-- Top Badge -->
+
+            <div class="auth-header">
+
+                <span class="eyebrow">
+
+                    👋 Welcome Back
+
+                </span>
+
+                <h1 class="auth-title">
+
+                    Log In to
+                    <span class="gradient-text">
+                        FitFusion AI
+                    </span>
+
+                </h1>
+
+                <p class="auth-subtitle">
+
+                    Welcome back! Sign in to access your personalized
+                    dashboard, health insights, workout plans and diet
+                    recommendations.
+
+                </p>
+
+            </div>
+
+            <!-- Login Form -->
+
+            <form
+                class="auth-form"
+                method="POST"
+                action="{{ url_for('login') }}"
+                novalidate>
+
+                <!-- EMAIL -->
+
+                <div class="floating-group">
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="floating-input"
+                        placeholder=" "
+                        autocomplete="email"
+                        required>
+
+                    <label
+                        for="email"
+                        class="floating-label">
+
+                        Email Address
+
+                    </label>
+
+                    <span class="input-icon">
+
+                        📧
+
+                    </span>
+
+                </div>
+
+                <!-- PASSWORD -->
+
+                <div class="floating-group">
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="floating-input"
+                        placeholder=" "
+                        autocomplete="current-password"
+                        required>
+
+                    <label
+                        for="password"
+                        class="floating-label">
+
+                        Password
+
+                    </label>
+
+                    <span class="input-icon">
+
+                        🔒
+
+                    </span>
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="togglePassword"
+                        aria-label="Show Password">
+
+                        👁
+
+                    </button>
+
+                </div>
+                <!-- ==========================================================
+     FOOTER
+=========================================================== -->
+
+<footer class="footer">
+
+    <div class="footer-inner">
+
+        <div class="footer-brand">
+
+            <a
+                href="{{ url_for('home') }}"
+                class="navbar-brand">
+
+                <span class="navbar-brand-mark"></span>
+
+                FitFusion AI
+
+            </a>
+
+            <p class="footer-brand-text">
+
+                Your intelligent fitness companion for BMI,
+                calorie tracking, workout planning and healthy
+                lifestyle recommendations.
+
+            </p>
+
+        </div>
+
+        <div class="footer-col">
+
+            <h4 class="footer-heading">
+
+                Explore
+
+            </h4>
+
+            <ul class="footer-links">
+
+                <li>
+                    <a href="{{ url_for('home') }}">
+                        Home
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('home') }}#features">
+                        Features
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('contact') }}">
+                        Contact
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+        <div class="footer-col">
+
+            <h4 class="footer-heading">
+
+                Account
+
+            </h4>
+
+            <ul class="footer-links">
+
+                <li>
+
+                    <a href="{{ url_for('login') }}">
+
+                        Login
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="{{ url_for('register') }}">
+
+                        Register
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="#">
+
+                        Privacy Policy
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+        © 2026 FitFusion AI • Final Year B.Sc. Computer Science Project
+
+    </div>
+
+</footer>
+
+<!-- ==========================================================
+     JAVASCRIPT
+=========================================================== -->
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+
+</body>
+
+</html>

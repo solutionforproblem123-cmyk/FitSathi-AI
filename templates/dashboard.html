@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<!--
+  FitFusion AI - dashboard.html
+  ----------------------------------------------------------
+  Purpose:
+    Logged-in user dashboard. Reuses the existing navbar and
+    footer markup from index.html/login.html/register.html,
+    and composes existing component classes (glass-card,
+    card-title, card-text, card-icon-badge, btn, eyebrow,
+    section-heading, section-subtext, container, form-* where
+    relevant) to build the SaaS dashboard layout.
+
+    No new CSS or JS is introduced. No backend data is wired
+    in -- every value below is static placeholder content,
+    written so it can be swapped for Jinja2 variables/loops
+    once the database connection layer and routes exist.
+-->
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard – FitSaathi AI</title>
+  <meta name="description" content="Your FitSaathi AI dashboard -- BMI, calories, workouts, diet, and progress at a glance.">
+
+  <!-- Single stylesheet entry point -- same as every other page -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- ======================================================
+       NAVBAR (same structure as index.html / login.html / register.html)
+  ======================================================= -->
+  <header class="navbar">
+    <div class="navbar-inner">
+
+      <a href="{{ url_for('home') }}" class="navbar-brand">
+        <span class="navbar-brand-mark" aria-hidden="true"></span>
+        FitFusion AI
+      </a>
+
+      <nav aria-label="Primary navigation">
+        <ul class="navbar-links" id="navbarLinks">
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('bmi') }}">BMI</a></li>
+          <li><a href="{{ url_for('workout') }}">Workout</a></li>
+          <li><a href="{{ url_for('diet') }}">Diet</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="navbar-actions">
+        <a href="{{ url_for('profile') }}" class="btn btn-secondary">Profile</a>
+        <a href="{{ url_for('login') }}" class="btn btn-primary" aria-label="Log out of FitFusion AI">Log Out</a>
+
+        <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ====================================================
+         1. DASHBOARD HERO
+    ===================================================== -->
+    <section class="hero" aria-labelledby="dashboard-welcome-heading">
+      <div class="hero-content">
+        <span class="eyebrow">Today · <!-- Placeholder: today's date -->{{ current_date }}</span>
+       <h1 class="hero-heading" id="dashboard-welcome-heading">
+    Welcome Back,
+    <span class="gradient-text">
+        {{ session.get("user_name", "User") }}
+    </span>
+</h1>
+        <p class="hero-subtext">
+          Current Goal:<strong>{{ dashboard.goal }}</strong>. Small steps today add up --
+          let's keep that streak going.
+        </p>
+        <div class="hero-actions">
+          <a href="{{ url_for('workout') }}" class="btn btn-primary" aria-label="Start today's workout">
+            Start Today's Workout
+          </a>
+          <a href="{{ url_for('profile') }}" class="btn btn-secondary">View Profile</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+     AI COACH
+===================================================== -->
+
+<section aria-labelledby="ai-coach-heading">
+
+    <div class="section-header">
+
+        <span class="eyebrow">
+            AI Coach
+        </span>
+
+        <h2
+            class="section-heading"
+            id="ai-coach-heading">
+
+            Personalized Fitness Insights
+
+        </h2>
+
+        <p class="section-subtext">
+
+            Generated using FitFusion AI.
+
+        </p>
+
+    </div>
+
+    <article class="glass-card">
+
+        <div class="card-icon-badge">
+            🤖
+        </div>
+
+        <h3 class="card-title">
+
+            FitFusion AI Coach
+
+        </h3>
+
+        {% if analysis %}
+
+        <p class="card-text">
+
+            {{ analysis | replace('\n','<br>') | safe }}
+
+        </p>
+
+        {% else %}
+
+        <p class="card-text">
+
+            No AI recommendations available.
+
+        </p>
+
+        {% endif %}
+
+    </article>
+
+</section>
+
+    <!-- ====================================================
+         2. QUICK STATISTICS
+    ===================================================== -->
+    <section aria-labelledby="quick-stats-heading">
+      <div class="section-header">
+        <span class="eyebrow">Overview</span>
+        <h2 class="section-heading" id="quick-stats-heading">Quick Statistics</h2>
+        <p class="section-subtext">A snapshot of where things stand today.</p>
+      </div>
+
+      <div class="features-grid">
+
+        <article class="glass-card" aria-label="BMI statistic">
+          <div class="card-icon-badge" aria-hidden="true">⚖</div>
+          <h3 class="card-title">BMI</h3>
+          <p class="hero-stat-value"><!-- Placeholder: BMI value -->{{ dashboard.bmi }}</p>
+          <p class="card-text"><!-- Placeholder: BMI category -->{{ dashboard.category }}</p>
+        </article>
+
+        <article class="glass-card" aria-label="Calories statistic">
+          <div class="card-icon-badge" aria-hidden="true">🔥</div>
+          <h3 class="card-title">Calories</h3>
+          <p class="hero-stat-value"><!-- Placeholder: calorie count -->{{ dashboard.calories }} kcal</p>
+          <p class="card-text">Today's Goal</p>
+        </article>
+
+        <article class="glass-card" aria-label="Workout statistic">
+          <div class="card-icon-badge" aria-hidden="true">🏋</div>
+          <h3 class="card-title">Workout</h3>
+          <p class="hero-stat-value"><!-- Placeholder: workout name -->{{ dashboard.workout_days }} Days / Week</p>
+          <p class="card-text"><!-- Placeholder: duration -->{{ dashboard.goal }}</p>
+        </article>
+
+        <article class="glass-card" aria-label="Weekly progress statistic">
+          <div class="card-icon-badge" aria-hidden="true">📈</div>
+          <h3 class="card-title">Progress</h3>
+          <p class="hero-stat-value"><!-- Placeholder: progress percent --></p>
+          <p class="card-text">Weekly Target</p>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ====================================================
+         3. QUICK ACTIONS
+    ===================================================== -->
+    <section aria-labelledby="quick-actions-heading">
+      <div class="section-header">
+        <span class="eyebrow">Modules</span>
+        <h2 class="section-heading" id="quick-actions-heading">Quick Actions</h2>
+        <p class="section-subtext">Jump straight into any tool you need.</p>
+      </div>
+
+      <div class="features-grid">
+
+        <article class="glass-card">
+          <div class="card-icon-badge" aria-hidden="true">⚖</div>
+          <h3 class="card-title">BMI Calculator</h3>
+          <p class="card-text">Check your Body Mass Index and see your category instantly.</p>
+          <a href="{{ url_for('bmi') }}" class="btn btn-secondary" aria-label="Open BMI Calculator">Open</a>
+        </article>
+
+        <article class="glass-card">
+          <div class="card-icon-badge" aria-hidden="true">🔥</div>
+          <h3 class="card-title">Calorie Calculator</h3>
+          <p class="card-text">Find your daily calorie needs based on activity level.</p>
+         <a href="{{ url_for('calories') }}" class="btn btn-secondary">Open</a>
+        </article>
+
+        <article class="glass-card">
+          <div class="card-icon-badge" aria-hidden="true">🏋</div>
+          <h3 class="card-title">Workout Planner</h3>
+          <p class="card-text">Get a workout plan tailored to your current goal.</p>
+          <a href="{{ url_for('workout') }}" class="btn btn-secondary" aria-label="Open Workout Planner">Open</a>
+        </article>
+
+        <article class="glass-card">
+          <div class="card-icon-badge" aria-hidden="true">🥗</div>
+          <h3 class="card-title">Diet Planner</h3>
+          <p class="card-text">View diet suggestions that match your calorie target.</p>
+          <a href="{{ url_for('diet') }}" class="btn btn-secondary" aria-label="Open Diet Planner">Open</a>
+        </article>
+
+        <article class="glass-card">
+          <div class="card-icon-badge" aria-hidden="true">📈</div>
+          <h3 class="card-title">Progress Tracker</h3>
+          <p class="card-text">Log your weight and review your trend over time.</p>
+          <a href="{{ url_for('progress') }}" class="btn btn-secondary" aria-label="Open Progress Tracker">Open</a>
+        </article>
+
+        <article class="glass-card">
+          <div class="card-icon-badge" aria-hidden="true">👤</div>
+          <h3 class="card-title">Profile</h3>
+          <p class="card-text">Update your personal details and fitness profile.</p>
+          <a href="{{ url_for('profile') }}" class="btn btn-secondary" aria-label="Open Profile">Open</a>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ====================================================
+         4. TODAY'S RECOMMENDATION
+    ===================================================== -->
+    <section aria-labelledby="todays-recommendation-heading">
+      <div class="section-header">
+        <span class="eyebrow">For You</span>
+        <h2 class="section-heading" id="todays-recommendation-heading">Today's Recommendation</h2>
+        <p class="section-subtext">A combined snapshot of what's recommended for today.</p>
+      </div>
+
+      <article class="glass-card">
+        <div class="features-grid">
+          <div>
+            <h3 class="card-title">Workout Recommendation</h3>
+            <p class="card-text"><!-- Placeholder --> {{ dashboard.workout_days }} Days Strength -- {{ dashboard.goal }}, 4 exercises.</p>
+          </div>
+
+          <div>
+            <h3 class="card-title">Diet Recommendation</h3>
+            <p class="card-text"><!-- Placeholder --> High-protein meal plan, approx. {{ dashboard.calories }} kcal today.</p>
+          </div>
+
+          <div>
+            <h3 class="card-title">Water Reminder</h3>
+            <p class="card-text"><!-- Placeholder --> 4 of 8 glasses logged so far today.</p>
+          </div>
+
+          <div>
+            <h3 class="card-title">Motivational Quote</h3>
+            <p class="card-text"><!-- Placeholder --> "Discipline is choosing between what you want now and what you want most."</p>
+          </div>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- ====================================================
+         5. WEEKLY PROGRESS
+    ===================================================== -->
+    <section aria-labelledby="weekly-progress-heading">
+      <div class="section-header">
+        <span class="eyebrow">Trends</span>
+        <h2 class="section-heading" id="weekly-progress-heading">Weekly Progress</h2>
+      </div>
+
+      <article class="glass-card">
+
+    <div class="features-grid">
+
+        <div>
+
+            <h3 class="card-title">
+
+                Current Weight
+
+            </h3>
+
+            <p class="hero-stat-value">
+
+                {{ dashboard.stats.current_weight }} kg
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <h3 class="card-title">
+
+                Weight Change
+
+            </h3>
+
+            <p class="hero-stat-value">
+
+                {{ dashboard.stats.weight_change }} kg
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <h3 class="card-title">
+
+                Workout Completion
+
+            </h3>
+
+            <p class="hero-stat-value">
+
+                {{ dashboard.stats.workout_completion }}%
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <h3 class="card-title">
+
+                Total Entries
+
+            </h3>
+
+            <p class="hero-stat-value">
+
+                {{ dashboard.stats.total_entries }}
+
+            </p>
+
+        </div>
+
+    </div>
+
+</article>
+    </section>
+
+    <!-- ====================================================
+         6. TODAY'S SCHEDULE
+    ===================================================== -->
+    <section aria-labelledby="todays-schedule-heading">
+      <div class="section-header">
+        <span class="eyebrow">Plan</span>
+        <h2 class="section-heading" id="todays-schedule-heading">Today's Schedule</h2>
+      </div>
+
+      <article class="glass-card">
+        <ol aria-label="Today's schedule timeline">
+          <li class="form-group">
+            <span class="form-label">7:00 AM</span>
+            <p class="card-text">Morning Workout</p>
+          </li>
+          <li class="form-group">
+            <span class="form-label">8:00 AM</span>
+            <p class="card-text">Breakfast</p>
+          </li>
+          <li class="form-group">
+            <span class="form-label">1:00 PM</span>
+            <p class="card-text">Lunch</p>
+          </li>
+          <li class="form-group">
+            <span class="form-label">6:00 PM</span>
+            <p class="card-text">Evening Walk</p>
+          </li>
+          <li class="form-group">
+            <span class="form-label">8:00 PM</span>
+            <p class="card-text">Dinner</p>
+          </li>
+        </ol>
+      </article>
+    </section>
+
+    <!-- ====================================================
+         7. RECENT ACTIVITIES
+    ===================================================== -->
+    <section aria-labelledby="recent-activities-heading">
+      <div class="section-header">
+        <span class="eyebrow">History</span>
+        <h2 class="section-heading" id="recent-activities-heading">Recent Activities</h2>
+      </div>
+
+      <article class="glass-card">
+        <ul aria-label="Recent activity list">
+          <li class="card-text"><!-- Placeholder --> BMI Updated -- 2 hours ago</li>
+          <li class="card-text"><!-- Placeholder --> Workout Completed -- Yesterday</li>
+          <li class="card-text"><!-- Placeholder --> Diet Viewed -- Yesterday</li>
+          <li class="card-text"><!-- Placeholder --> Water Intake Updated -- Yesterday</li>
+          <li class="card-text"><!-- Placeholder --> Progress Recorded -- 2 days ago</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- ====================================================
+         8. HEALTH TIPS
+    ===================================================== -->
+    <section aria-labelledby="health-tips-heading">
+      <div class="section-header">
+        <span class="eyebrow">Learn</span>
+        <h2 class="section-heading" id="health-tips-heading">Health Tips</h2>
+      </div>
+
+      <div class="features-grid">
+
+        <aside class="glass-card" aria-label="Daily tip">
+          <h3 class="card-title">Daily Tip</h3>
+          <p class="card-text"><!-- Placeholder --> Stretch for 5 minutes before bed to improve recovery.</p>
+        </aside>
+
+        <aside class="glass-card" aria-label="Nutrition tip">
+          <h3 class="card-title">Nutrition Tip</h3>
+          <p class="card-text"><!-- Placeholder --> Add a source of protein to every meal to stay fuller longer.</p>
+        </aside>
+
+        <aside class="glass-card" aria-label="Exercise tip">
+          <h3 class="card-title">Exercise Tip</h3>
+          <p class="card-text"><!-- Placeholder --> Consistency beats intensity -- a short daily walk counts.</p>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- ====================================================
+         9. PROFILE SUMMARY
+    ===================================================== -->
+    <section aria-labelledby="profile-summary-heading">
+      <div class="section-header">
+        <span class="eyebrow">Account</span>
+        <h2 class="section-heading" id="profile-summary-heading">Profile Summary</h2>
+      </div>
+
+      <article class="glass-card">
+        <div class="card-icon-badge" aria-hidden="true">👤</div>
+        <h3 class="card-title"><!-- Placeholder: full name --> {{ dashboard.full_name }} </h3>
+        <p class="card-text"><!-- Placeholder: email -->{{ dashboard.email }}</p>
+        <p class="card-text"><!-- Placeholder: age --> Age: {{ dashboard.age }}</p>
+        <p class="card-text"><!-- Placeholder: height -->Height: {{ dashboard.height }} cm</p>
+        <p class="card-text"><!-- Placeholder: weight --> Weight: {{ dashboard.current_weight }} kg</p>
+        <a href="{{ url_for('profile') }}" class="btn btn-primary" aria-label="Edit your profile">Edit Profile</a>
+      </article>
+    </section>
+
+  </main>
+
+  <!-- ======================================================
+       FOOTER (same structure as index.html / login.html / register.html)
+  ======================================================= -->
+  <footer class="footer">
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <a href="{{ url_for('home') }}" class="navbar-brand">
+          <span class="navbar-brand-mark" aria-hidden="true"></span>
+          FitFusion AI
+        </a>
+        <p class="footer-brand-text">
+          A smart fitness recommendation system helping you calculate,
+          plan, and track your health journey.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Navigate</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('home') }}#hero">Home</a></li>
+          <li><a href="{{ url_for('home') }}#features">Features</a></li>
+          <li><a href="{{ url_for('home') }}#about">About</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Account</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('login') }}">Log In</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      &copy; 2026 FitFusion AI. Final Year B.Sc. Computer Science Project.
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

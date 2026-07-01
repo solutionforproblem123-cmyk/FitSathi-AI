@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<!--
+  FitFusion AI - bmi.html
+  ----------------------------------------------------------
+  Purpose:
+    BMI Calculator page -- UI prototype only. No JavaScript
+    calculation, no backend submission logic, no API calls.
+    Reuses the navbar/footer from the other pages and the
+    existing component/dashboard classes wherever possible.
+    The only new class introduced is .faq-list, used purely
+    as a layout wrapper around native <details>/<summary>
+    accordion elements (no JS required for that behavior).
+-->
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMI Calculator – FitSaathi AI</title>
+  <meta name="description" content="Calculate your Body Mass Index and understand your health status with FitSaathi AI.">
+
+  <!-- Single stylesheet entry point -- same as every other page -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- ======================================================
+       NAVBAR (same structure as dashboard.html)
+  ======================================================= -->
+  <header class="navbar">
+    <div class="navbar-inner">
+
+      <a href="{{ url_for('home') }}" class="navbar-brand">
+        <span class="navbar-brand-mark" aria-hidden="true"></span>
+        FitFusion AI
+      </a>
+
+      <nav aria-label="Primary navigation">
+        <ul class="navbar-links" id="navbarLinks">
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('bmi') }}">BMI</a></li>
+          <li><a href="{{ url_for('workout') }}">Workout</a></li>
+          <li><a href="{{ url_for('diet') }}">Diet</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="navbar-actions">
+        <a href="{{ url_for('profile') }}" class="btn btn-secondary">Profile</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-primary" aria-label="Log out of FitFusion AI">
+    Log Out
+</a>
+
+        <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ====================================================
+         PAGE HEADER (reuses dashboard header classes)
+    ===================================================== -->
+    <section class="dashboard-header" aria-labelledby="bmi-page-heading">
+      <div class="dashboard-header-content">
+        <div>
+          <span class="eyebrow">Health Check</span>
+          <h1 class="dashboard-title" id="bmi-page-heading">BMI Calculator</h1>
+          <p class="dashboard-subtitle">
+            Calculate your Body Mass Index and understand your health status.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         BMI FORM
+    ===================================================== -->
+    <section aria-labelledby="bmi-form-heading">
+      <h2 class="section-heading" id="bmi-form-heading">Enter Your Details</h2>
+
+      <article class="glass-card">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+
+<div class="flash-container">
+
+{% for category, message in messages %}
+
+<div class="flash-message flash-{{ category }}">
+    {{ message }}
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+{% endwith %}
+        <form class="auth-form" action="{{ url_for('bmi') }}" method="POST" novalidate aria-label="BMI calculator form">
+
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label for="height" class="form-label">Height (cm)</label>
+              <input
+                type="number"
+                id="height"
+                name="height"
+                class="form-input"
+                placeholder="e.g. 172"
+                min="1"
+                step="0.1"
+                autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="weight" class="form-label">Weight (kg)</label>
+              <input
+                type="number"
+                id="weight"
+                name="weight"
+                class="form-input"
+                placeholder="e.g. 70"
+                min="1"
+                step="0.1"
+                autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="age" class="form-label">Age</label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                class="form-input"
+                placeholder="e.g. 24"
+                min="1"
+                autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="gender" class="form-label">Gender</label>
+              <select id="gender" name="gender" class="form-input">
+                <option value="" disabled selected>Select your gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="hero-actions">
+            <button type="submit" class="btn btn-primary" aria-label="Calculate BMI">Calculate BMI</button>
+            <button type="reset" class="btn btn-secondary" aria-label="Reset BMI form">Reset</button>
+          </div>
+
+        </form>
+      </article>
+    </section>
+
+    <!-- ====================================================
+         RESULT CARD (placeholder values only)
+    ===================================================== -->
+    <section aria-labelledby="bmi-result-heading">
+      <h2 class="section-heading" id="bmi-result-heading">Your Result</h2>
+
+      <article class="glass-card text-center" aria-live="polite">
+
+{% if bmi %}
+
+<p class="card-text">
+    Your BMI Score
+</p>
+
+<p class="stat-value">
+    {{ bmi }}
+</p>
+
+<p class="card-title">
+    {{ category }}
+</p>
+
+{% else %}
+
+<p class="card-text">
+    Enter your height and weight to calculate your BMI.
+</p>
+
+{% endif %}
+
+</article>
+    </section>
+
+    <!-- ====================================================
+         BMI CATEGORIES
+    ===================================================== -->
+    <section aria-labelledby="bmi-categories-heading">
+      <div class="section-header">
+        <span class="eyebrow">Reference</span>
+        <h2 class="section-heading" id="bmi-categories-heading">BMI Categories</h2>
+        <p class="section-subtext">Understand where each BMI range falls.</p>
+      </div>
+
+      <div class="features-grid">
+
+        <article class="glass-card" aria-label="Underweight category">
+          <div class="card-icon-badge" aria-hidden="true">⬇</div>
+          <h3 class="card-title">Underweight</h3>
+          <p class="card-text">BMI below 18.5</p>
+        </article>
+
+        <article class="glass-card" aria-label="Normal category">
+          <div class="card-icon-badge" aria-hidden="true">✓</div>
+          <h3 class="card-title">Normal</h3>
+          <p class="card-text">BMI 18.5 – 24.9</p>
+        </article>
+
+        <article class="glass-card" aria-label="Overweight category">
+          <div class="card-icon-badge" aria-hidden="true">⬆</div>
+          <h3 class="card-title">Overweight</h3>
+          <p class="card-text">BMI 25 – 29.9</p>
+        </article>
+
+        <article class="glass-card" aria-label="Obese category">
+          <div class="card-icon-badge" aria-hidden="true">⚠</div>
+          <h3 class="card-title">Obese</h3>
+          <p class="card-text">BMI 30 and above</p>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ====================================================
+         HEALTH TIPS (reuses dashboard tips classes)
+    ===================================================== -->
+    <section aria-labelledby="bmi-health-tips-heading">
+      <div class="section-header">
+        <span class="eyebrow">Learn</span>
+        <h2 class="section-heading" id="bmi-health-tips-heading">Health Tips</h2>
+      </div>
+
+      <div class="tips-grid">
+
+        <aside class="tip-card" aria-label="Daily tip">
+          <h3 class="card-title">Daily Tip</h3>
+          <p class="card-text"><!-- Placeholder --> Weigh yourself at the same time each day for consistent tracking.</p>
+        </aside>
+
+        <aside class="tip-card" aria-label="Nutrition tip">
+          <h3 class="card-title">Nutrition Tip</h3>
+          <p class="card-text"><!-- Placeholder --> BMI doesn't account for muscle mass -- pair it with how you feel.</p>
+        </aside>
+
+        <aside class="tip-card" aria-label="Exercise tip">
+          <h3 class="card-title">Exercise Tip</h3>
+          <p class="card-text"><!-- Placeholder --> Combine cardio and strength training for balanced results.</p>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- ====================================================
+         FREQUENTLY ASKED QUESTIONS
+         Accordion placeholders using native <details>/<summary>
+         -- no JavaScript required for expand/collapse behavior.
+    ===================================================== -->
+    <section aria-labelledby="bmi-faq-heading">
+      <div class="section-header">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="section-heading" id="bmi-faq-heading">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="faq-list">
+
+        <details class="glass-card">
+          <summary class="card-title">What is BMI?</summary>
+          <p class="card-text"><!-- Placeholder --> BMI is a simple measure using your height and weight to estimate whether your weight is in a healthy range.</p>
+        </details>
+
+        <details class="glass-card">
+          <summary class="card-title">Is BMI accurate for everyone?</summary>
+          <p class="card-text"><!-- Placeholder --> BMI is a general guideline and may not fully reflect body composition for athletes or older adults.</p>
+        </details>
+
+        <details class="glass-card">
+          <summary class="card-title">How often should I check my BMI?</summary>
+          <p class="card-text"><!-- Placeholder --> Checking every few weeks is generally enough to track meaningful changes.</p>
+        </details>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================
+       FOOTER (same structure as dashboard.html)
+  ======================================================= -->
+  <footer class="footer">
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <a href="{{ url_for('home') }}" class="navbar-brand">
+          <span class="navbar-brand-mark" aria-hidden="true"></span>
+          FitFusion AI
+        </a>
+        <p class="footer-brand-text">
+          A smart fitness recommendation system helping you calculate,
+          plan, and track your health journey.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Navigate</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('home') }}#hero">Home</a></li>
+          <li><a href="{{ url_for('home') }}#features">Features</a></li>
+          <li><a href="{{ url_for('home') }}#about">About</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Account</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('login') }}">Log In</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      &copy; 2026 FitFusion AI. Final Year B.Sc. Computer Science Project.
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

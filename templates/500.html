@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<!--
+==========================================================
+FitFusion AI - 404.html
+
+Purpose:
+Custom Page Not Found
+
+Future:
+Flask Error Handler
+==========================================================
+-->
+
+<html lang="en" data-theme="light">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+
+404 | Page Not Found
+
+</title>
+
+<link
+rel="stylesheet"
+href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+<div class="navbar-inner">
+
+<a
+href="{{ url_for('home') }}"
+class="navbar-brand">
+
+<span class="navbar-brand-mark"></span>
+
+FitFusion AI
+
+</a>
+
+<nav>
+
+<ul
+class="navbar-links"
+id="navbarLinks">
+
+<li><a href="{{ url_for('home') }}">Home</a></li>
+
+<li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+
+<li><a href="{{ url_for('contact') }}">Contact</a></li>
+
+</ul>
+
+</nav>
+
+<div class="navbar-actions">
+
+<button
+class="navbar-toggle"
+id="navbarToggle">
+
+<span></span>
+<span></span>
+<span></span>
+
+</button>
+
+</div>
+
+</div>
+
+</header>
+
+<main>
+
+<section class="container">
+
+<div
+class="glass-card"
+style="margin-top:140px;text-align:center;">
+
+<div
+style="font-size:100px;font-weight:bold;">
+
+404
+
+</div>
+
+<h1
+class="section-heading">
+
+Oops!
+
+Page Not Found
+
+</h1>
+
+<p
+class="section-subtext">
+
+The page you are looking for doesn't exist,
+has been moved,
+or the URL is incorrect.
+
+</p>
+
+<div
+class="hero-actions"
+style="justify-content:center;margin-top:30px;">
+
+<a
+href="{{ url_for('home') }}"
+class="btn btn-primary">
+
+Go Home
+
+</a>
+
+<a
+href="{{ url_for('dashboard') }}"
+class="btn btn-secondary">
+
+Dashboard
+
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="container">
+
+<div class="section-header">
+
+<span class="eyebrow">
+
+Need Help?
+
+</span>
+
+<h2 class="section-heading">
+
+What can you do now?
+
+</h2>
+
+</div>
+
+<div class="features-grid">
+
+<div class="glass-card">
+
+<div class="card-icon-badge">
+
+🏠
+
+</div>
+
+<h3 class="card-title">
+
+Home
+
+</h3>
+
+<p class="card-text">
+
+Return to the homepage.
+
+</p>
+
+</div>
+
+<div class="glass-card">
+
+<div class="card-icon-badge">
+
+📊
+
+</div>
+
+<h3 class="card-title">
+
+Dashboard
+
+</h3>
+
+<p class="card-text">
+
+Continue your fitness journey.
+
+</p>
+
+</div>
+
+<div class="glass-card">
+
+<div class="card-icon-badge">
+
+📧
+
+</div>
+
+<h3 class="card-title">
+
+Contact
+
+</h3>
+
+<p class="card-text">
+
+Reach us if the problem continues.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+<footer class="footer">
+
+<div class="footer-inner">
+
+<div class="footer-brand">
+
+<a
+href="{{ url_for('home') }}"
+class="navbar-brand">
+
+<span class="navbar-brand-mark"></span>
+
+FitFusion AI
+
+</a>
+
+<p class="footer-brand-text">
+
+Smart Fitness Recommendation System
+
+</p>
+
+</div>
+
+<div class="footer-col">
+
+<h4 class="footer-heading">
+
+Quick Links
+
+</h4>
+
+<ul class="footer-links">
+
+<li><a href="{{ url_for('home') }}">Home</a></li>
+
+<li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+
+<li><a href="{{ url_for('contact') }}">Contact</a></li>
+
+</ul>
+
+</div>
+
+</div>
+
+<div class="footer-bottom">
+
+© 2026 FitFusion AI | All Rights Reserved
+
+</div>
+
+</footer>
+
+<script
+src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,136 @@
+/* ==========================================================
+   FitFusion AI - variables.css
+   --------------------------------------------------------
+   Purpose:
+     Single source of truth for all design tokens used across
+     the app: colors, gradients, typography scale, spacing,
+     border radius, and shadows.
+
+   Theme Architecture:
+     Tokens are defined twice -- once for LIGHT mode (default,
+     under :root) and once for DARK mode (under
+     [data-theme="dark"]). A future toggle script will simply
+     set data-theme="dark" on <html>, and every component will
+     repaint automatically because components only ever
+     reference these variables, never raw color values.
+   ========================================================== */
+
+:root {
+  /* ----------------------------------------------------
+     Brand Gradient
+     A violet -> teal gradient is FitFusion's signature --
+     violet reads as "intelligence / AI", teal reads as
+     "vitality / health". Used on CTAs, headline accents,
+     and glass card borders.
+  ---------------------------------------------------- */
+  --gradient-primary: linear-gradient(135deg, #6C5CE7 0%, #00D9C0 100%);
+  --gradient-primary-soft: linear-gradient(135deg, rgba(108, 92, 231, 0.15) 0%, rgba(0, 217, 192, 0.15) 100%);
+  --gradient-accent: linear-gradient(135deg, #FF6B6B 0%, #FFA36C 100%);
+
+  /* ----------------------------------------------------
+     Core Palette (Light Mode)
+  ---------------------------------------------------- */
+  --color-bg: #F5F6FA;
+  --color-bg-alt: #FFFFFF;
+  --color-surface: rgba(255, 255, 255, 0.6);      /* glass surface */
+  --color-surface-border: rgba(255, 255, 255, 0.8);
+
+  --color-text-primary: #14152B;
+  --color-text-secondary: #51546B;
+  --color-text-muted: #8A8DA3;
+
+  --color-primary: #6C5CE7;
+  --color-secondary: #00D9C0;
+  --color-accent: #FF6B6B;
+
+  --color-border: rgba(20, 21, 43, 0.08);
+  --color-success: #2ECC71;
+  --color-warning: #FFB020;
+  --color-danger: #FF5252;
+
+  /* ----------------------------------------------------
+     Typography
+  ---------------------------------------------------- */
+  --font-display: 'Sora', 'Segoe UI', sans-serif;   /* headlines */
+  --font-body: 'Inter', 'Segoe UI', sans-serif;     /* paragraphs/UI */
+  --font-mono: 'JetBrains Mono', monospace;         /* stats/data */
+
+  --fs-xs: 0.75rem;     /* 12px */
+  --fs-sm: 0.875rem;    /* 14px */
+  --fs-base: 1rem;      /* 16px */
+  --fs-md: 1.125rem;    /* 18px */
+  --fs-lg: 1.5rem;      /* 24px */
+  --fs-xl: 2rem;        /* 32px */
+  --fs-2xl: 2.75rem;    /* 44px */
+  --fs-3xl: 3.5rem;     /* 56px */
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* ----------------------------------------------------
+     Spacing Scale (used for padding/margin/gap)
+  ---------------------------------------------------- */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+
+  /* ----------------------------------------------------
+     Border Radius -- rounded, soft, glass-friendly
+  ---------------------------------------------------- */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 999px;
+
+  /* ----------------------------------------------------
+     Shadows -- soft, diffused (glassmorphism style)
+  ---------------------------------------------------- */
+  --shadow-sm: 0 2px 8px rgba(20, 21, 43, 0.06);
+  --shadow-md: 0 8px 24px rgba(20, 21, 43, 0.08);
+  --shadow-lg: 0 16px 40px rgba(20, 21, 43, 0.12);
+  --shadow-glow: 0 0 32px rgba(108, 92, 231, 0.25);
+
+  /* ----------------------------------------------------
+     Glassmorphism Blur
+  ---------------------------------------------------- */
+  --glass-blur: blur(16px);
+
+  /* ----------------------------------------------------
+     Layout
+  ---------------------------------------------------- */
+  --max-width: 1200px;
+  --navbar-height: 76px;
+  --transition-base: 0.25s ease;
+}
+
+/* ==========================================================
+   DARK MODE TOKENS
+   --------------------------------------------------------
+   Activated when <html data-theme="dark"> is set. Only the
+   token VALUES change -- every component file keeps using
+   the same variable names, so no component code needs to
+   know which theme is active.
+   ========================================================== */
+[data-theme="dark"] {
+  --color-bg: #0F1226;
+  --color-bg-alt: #161A35;
+  --color-surface: rgba(255, 255, 255, 0.06);
+  --color-surface-border: rgba(255, 255, 255, 0.12);
+
+  --color-text-primary: #F3F4FA;
+  --color-text-secondary: #B6B9D1;
+  --color-text-muted: #767AA0;
+
+  --color-border: rgba(255, 255, 255, 0.08);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --shadow-glow: 0 0 40px rgba(0, 217, 192, 0.25);
+}

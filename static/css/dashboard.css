@@ -1,0 +1,530 @@
+/* ==========================================================
+   FitFusion AI - dashboard.css
+   --------------------------------------------------------
+   Purpose:
+     Dashboard-specific styling ONLY. Covers the dashboard
+     header, statistics, quick actions, recommendations,
+     progress, schedule, recent activity, health tips, and
+     profile summary sections of templates/dashboard.html.
+
+   Rule:
+     This file never redefines .glass-card, .btn, .btn-primary,
+     .btn-secondary, .card-title, .card-text, .features-grid,
+     etc. Those stay owned by components.css/pages.css.
+     Every class below is dashboard-specific and new.
+
+   Dependency:
+     Assumes variables.css has already loaded (all --color-*,
+     --space-*, --radius-*, --shadow-*, --font-*, --fs-*,
+     --fw-*, --transition-base tokens used below). No raw
+     color, shadow, or spacing values appear anywhere here.
+
+   Mobile-first:
+     Base rules target small screens. min-width media queries
+     progressively enhance the layout for tablet (768px) and
+     desktop (992px+), matching the breakpoints already used
+     elsewhere in the project (pages.css).
+   ========================================================== */
+
+
+/* ----------------------------------------------------------
+   1. DASHBOARD HEADER
+   The top banner introducing the logged-in user, distinct
+   from the marketing .hero used on the landing page.
+---------------------------------------------------------- */
+.dashboard-header {
+  padding: calc(var(--navbar-height) + var(--space-lg)) 0 var(--space-lg);
+}
+
+.dashboard-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.dashboard-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.dashboard-subtitle {
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.dashboard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 100%;
+}
+
+.dashboard-actions .btn {
+  width: 100%;
+}
+
+/* Tablet and up: header content row, actions align right,
+   buttons no longer need to stretch full width. */
+@media (min-width: 768px) {
+  .dashboard-header {
+    padding: calc(var(--navbar-height) + var(--space-xl)) 0 var(--space-xl);
+  }
+
+  .dashboard-header-content {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+  }
+
+  .dashboard-actions {
+    flex-direction: row;
+    width: auto;
+  }
+
+  .dashboard-actions .btn {
+    width: auto;
+  }
+}
+
+@media (min-width: 992px) {
+  .dashboard-title {
+    font-size: var(--fs-2xl);
+  }
+}
+
+
+/* ----------------------------------------------------------
+   2. STATISTICS SECTION
+   Premium glass stat cards (BMI, Calories, Workout, Progress)
+   shown in a responsive grid: 1 column mobile, 2 tablet,
+   4 desktop.
+---------------------------------------------------------- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media (min-width: 600px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-lg);
+  }
+}
+
+/* Independent glass treatment (not reusing .glass-card) so
+   the stat card can carry its own hover/trend layout without
+   affecting the shared component. */
+.stat-card {
+  background: var(--color-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+/* Hover Lift -- card hover animation, no JavaScript */
+.stat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.stat-label {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-secondary);
+}
+
+/* Small up/down indicator under the stat (e.g. "+2% this week") */
+.stat-trend {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--color-success);
+  margin-top: var(--space-xs);
+}
+
+.stat-trend[data-direction="down"] {
+  color: var(--color-danger);
+}
+
+
+/* ----------------------------------------------------------
+   3. QUICK ACTIONS
+   Grid of module shortcuts (BMI, Calorie, Workout, Diet,
+   Progress, Profile). 1 column mobile, 2 tablet, 3 desktop.
+---------------------------------------------------------- */
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media (min-width: 600px) {
+  .action-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .action-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+}
+
+.action-card {
+  background: var(--color-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+}
+
+.action-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+/* Gradient icon badge, sized slightly differently from the
+   shared .card-icon-badge to fit the denser action-card layout */
+.action-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-md);
+  color: var(--color-bg-alt);
+}
+
+
+/* ----------------------------------------------------------
+   4. RECOMMENDATIONS SECTION
+   "Today's Recommendation" sub-blocks (workout, diet, water,
+   quote) inside the large feature card.
+---------------------------------------------------------- */
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .recommendation-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.recommendation-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  transition: border-color var(--transition-base);
+}
+
+.recommendation-card:hover {
+  border-color: var(--color-primary);
+}
+
+
+/* ----------------------------------------------------------
+   5. PROGRESS SECTION
+   Weekly Progress card with a placeholder area reserved for
+   the future charting library.
+---------------------------------------------------------- */
+.progress-card {
+  background: var(--color-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-xl);
+}
+
+.chart-placeholder {
+  margin-top: var(--space-lg);
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+}
+
+@media (min-width: 768px) {
+  .chart-placeholder {
+    min-height: 320px;
+  }
+}
+
+
+/* ----------------------------------------------------------
+   6. TODAY'S SCHEDULE
+   Vertical timeline of the day's planned activities.
+---------------------------------------------------------- */
+.schedule-card {
+  background: var(--color-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-xl);
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  position: relative;
+  margin-top: var(--space-md);
+}
+
+/* Vertical connecting line running through the timeline */
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 5px;
+  width: 2px;
+  background: var(--color-border);
+}
+
+.timeline-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding-left: var(--space-lg);
+}
+
+/* Dot marker on the timeline, drawn with a gradient fill to
+   match the brand accent */
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--gradient-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.timeline-time {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.timeline-content {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  color: var(--color-text-primary);
+}
+
+/* Tablet and up: time + content sit side by side */
+@media (min-width: 600px) {
+  .timeline-item {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--space-md);
+    padding-left: var(--space-xl);
+  }
+
+  .timeline-time {
+    flex: 0 0 96px;
+  }
+}
+
+
+/* ----------------------------------------------------------
+   7. RECENT ACTIVITY
+   Simple list of recent dummy activity log entries.
+---------------------------------------------------------- */
+.activity-card {
+  background: var(--color-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-xl);
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+  transition: background-color var(--transition-base);
+}
+
+.activity-item:hover {
+  background-color: var(--gradient-primary-soft);
+}
+
+/* Small colored dot before each activity entry */
+.activity-item::before {
+  content: "";
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-secondary);
+}
+
+
+/* ----------------------------------------------------------
+   8. HEALTH TIPS
+   Three small tip cards (Daily, Nutrition, Exercise).
+---------------------------------------------------------- */
+.tips-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media (min-width: 768px) {
+  .tips-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.tip-card {
+  background: var(--color-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-lg);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.tip-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+
+/* ----------------------------------------------------------
+   9. PROFILE SUMMARY
+   Compact profile snapshot with avatar placeholder and
+   key details.
+---------------------------------------------------------- */
+.profile-summary {
+  background: var(--color-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-sm);
+}
+
+.profile-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-full);
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--color-bg-alt);
+  box-shadow: var(--shadow-glow);
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+/* Desktop: lay the summary out as a left-aligned row instead
+   of a stacked, centered block */
+@media (min-width: 768px) {
+  .profile-summary {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: var(--space-lg);
+  }
+
+  .profile-details {
+    align-items: flex-start;
+  }
+}
